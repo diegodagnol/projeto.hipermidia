@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -E \"\\\\.\\(json|yaml|yml|md|txt\\)$|^d\")",
+      "Bash(npm install:*)"
+    ]
+  }
+}
