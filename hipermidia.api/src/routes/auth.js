@@ -36,7 +36,7 @@ router.post(
       }
 
       const payload = { sub: admin.id, nome: admin.nome, email: admin.email };
-      const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '8h' });
+      const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
 
       res.json({
         token,

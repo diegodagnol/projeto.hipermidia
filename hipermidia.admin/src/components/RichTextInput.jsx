@@ -4,50 +4,105 @@ import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Link from '@tiptap/extension-link';
 import Placeholder from '@tiptap/extension-placeholder';
+import TextAlign from '@tiptap/extension-text-align';
+import { TableKit } from '@tiptap/extension-table';
+import Image from '@tiptap/extension-image';
+import Youtube from '@tiptap/extension-youtube';
 import './RichTextInput.css';
 
-function Toolbar({ editor }) {
-  if (!editor) return null;
-
-  const btn = (active, onClick, title, children) => (
+function btn(active, onClick, title, children, extra = '', disabled = false) {
+  return (
     <button
+      key={title}
       type="button"
       title={title}
-      className={`rte-btn${active ? ' is-active' : ''}`}
-      onMouseDown={(e) => { e.preventDefault(); onClick(); }}
+      disabled={disabled}
+      className={`rte-btn${active ? ' is-active' : ''}${extra ? ' ' + extra : ''}`}
+      onMouseDown={(e) => { e.preventDefault(); if (!disabled) onClick(); }}
     >
       {children}
     </button>
   );
+}
+
+function Toolbar({ editor }) {
+  if (!editor) return null;
+
+  const inTable = editor.isActive('table');
 
   return (
-    <div className="rte-toolbar">
-      <div className="rte-group">
-        {btn(editor.isActive('bold'),      () => editor.chain().focus().toggleBold().run(),      'Negrito',    <b>N</b>)}
-        {btn(editor.isActive('italic'),    () => editor.chain().focus().toggleItalic().run(),    'Itálico',    <i>I</i>)}
-        {btn(editor.isActive('strike'),    () => editor.chain().focus().toggleStrike().run(),    'Tachado',    <s>S</s>)}
+    <>
+      <div className="rte-toolbar">
+        {/* Formatação */}
+        <div className="rte-group">
+          {btn(editor.isActive('bold'),   () => editor.chain().focus().toggleBold().run(),   'Negrito', <b>N</b>)}
+          {btn(editor.isActive('italic'), () => editor.chain().focus().toggleItalic().run(), 'Itálico', <i>I</i>)}
+          {btn(editor.isActive('strike'), () => editor.chain().focus().toggleStrike().run(), 'Tachado', <s>S</s>)}
+        </div>
+
+        {/* Títulos */}
+        <div className="rte-group">
+          {btn(editor.isActive('heading', { level: 2 }), () => editor.chain().focus().toggleHeading({ level: 2 }).run(), 'Título 2', 'H2')}
+          {btn(editor.isActive('heading', { level: 3 }), () => editor.chain().focus().toggleHeading({ level: 3 }).run(), 'Título 3', 'H3')}
+        </div>
+
+        {/* Alinhamento */}
+        <div className="rte-group">
+          {btn(editor.isActive({ textAlign: 'left' }),    () => editor.chain().focus().setTextAlign('left').run(),    'Alinhar à esquerda', '⬤←')}
+          {btn(editor.isActive({ textAlign: 'center' }),  () => editor.chain().focus().setTextAlign('center').run(),  'Centralizar',        '⬤≡')}
+          {btn(editor.isActive({ textAlign: 'right' }),   () => editor.chain().focus().setTextAlign('right').run(),   'Alinhar à direita',  '⬤→')}
+          {btn(editor.isActive({ textAlign: 'justify' }), () => editor.chain().focus().setTextAlign('justify').run(), 'Justificar',         '☰')}
+        </div>
+
+        {/* Listas e citação */}
+        <div className="rte-group">
+          {btn(editor.isActive('bulletList'),  () => editor.chain().focus().toggleBulletList().run(),  'Lista',          '• —')}
+          {btn(editor.isActive('orderedList'), () => editor.chain().focus().toggleOrderedList().run(), 'Lista numerada', '1.')}
+          {btn(editor.isActive('blockquote'),  () => editor.chain().focus().toggleBlockquote().run(),  'Citação',        '❝')}
+        </div>
+
+        {/* Link */}
+        <div className="rte-group">
+          {btn(false, () => {
+            const url = window.prompt('URL do link:');
+            if (url) editor.chain().focus().setLink({ href: url, target: '_blank' }).run();
+          }, 'Inserir link', '🔗')}
+          {btn(editor.isActive('link'), () => editor.chain().focus().unsetLink().run(), 'Remover link', '🔗✕')}
+        </div>
+
+        {/* Mídia */}
+        <div className="rte-group">
+          {btn(false, () => {
+            const url = window.prompt('URL da imagem:');
+            if (url) editor.chain().focus().setImage({ src: url }).run();
+          }, 'Inserir imagem', '🖼')}
+          {btn(false, () => {
+            const url = window.prompt('URL do YouTube:');
+            if (url) editor.chain().focus().setYoutubeVideo({ src: url }).run();
+          }, 'Inserir vídeo do YouTube', '▶')}
+          {btn(false, () => editor.chain().focus().setHorizontalRule().run(), 'Linha divisória', '—')}
+        </div>
+
+        {/* Tabela */}
+        <div className="rte-group">
+          {!inTable && btn(false, () =>
+            editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run(),
+            'Inserir tabela', '⊞'
+          )}
+          {inTable && btn(false, () => editor.chain().focus().addRowAfter().run(),    'Adicionar linha',   '+L', '', !editor.can().addRowAfter())}
+          {inTable && btn(false, () => editor.chain().focus().deleteRow().run(),      'Remover linha',     '-L', '', !editor.can().deleteRow())}
+          {inTable && btn(false, () => editor.chain().focus().addColumnAfter().run(), 'Adicionar coluna',  '+C', '', !editor.can().addColumnAfter())}
+          {inTable && btn(false, () => editor.chain().focus().deleteColumn().run(),   'Remover coluna',    '-C', '', !editor.can().deleteColumn())}
+          {inTable && btn(false, () => editor.chain().focus().deleteTable().run(),    'Excluir tabela',    '🗑', 'rte-btn-danger', !editor.can().deleteTable())}
+        </div>
+
+        {/* Histórico */}
+        <div className="rte-group">
+          {btn(false, () => editor.chain().focus().undo().run(), 'Desfazer', '↩')}
+          {btn(false, () => editor.chain().focus().redo().run(), 'Refazer',  '↪')}
+        </div>
       </div>
-      <div className="rte-group">
-        {btn(editor.isActive('heading', { level: 2 }), () => editor.chain().focus().toggleHeading({ level: 2 }).run(), 'Título 2', 'H2')}
-        {btn(editor.isActive('heading', { level: 3 }), () => editor.chain().focus().toggleHeading({ level: 3 }).run(), 'Título 3', 'H3')}
-      </div>
-      <div className="rte-group">
-        {btn(editor.isActive('bulletList'),  () => editor.chain().focus().toggleBulletList().run(),  'Lista',          '• —')}
-        {btn(editor.isActive('orderedList'), () => editor.chain().focus().toggleOrderedList().run(), 'Lista numerada', '1.')}
-        {btn(editor.isActive('blockquote'),  () => editor.chain().focus().toggleBlockquote().run(),  'Citação',        '❝')}
-      </div>
-      <div className="rte-group">
-        {btn(false, () => {
-          const url = window.prompt('URL do link:');
-          if (url) editor.chain().focus().setLink({ href: url, target: '_blank' }).run();
-        }, 'Inserir link', '🔗')}
-        {btn(editor.isActive('link'), () => editor.chain().focus().unsetLink().run(), 'Remover link', '🔗✕')}
-      </div>
-      <div className="rte-group">
-        {btn(false, () => editor.chain().focus().undo().run(), 'Desfazer', '↩')}
-        {btn(false, () => editor.chain().focus().redo().run(), 'Refazer',  '↪')}
-      </div>
-    </div>
+    </>
   );
 }
 
@@ -63,6 +118,10 @@ export default function RichTextInput({ source, label, placeholder = 'Digite o c
       StarterKit,
       Link.configure({ openOnClick: false }),
       Placeholder.configure({ placeholder }),
+      TextAlign.configure({ types: ['heading', 'paragraph'] }),
+      TableKit.configure({ table: { resizable: false } }),
+      Image,
+      Youtube.configure({ nocookie: true, width: 640, height: 360 }),
     ],
     content: value || '',
     onUpdate({ editor }) {

@@ -2,6 +2,7 @@ const express = require('express');
 const { body, param, validationResult } = require('express-validator');
 const Local = require('../models/Local');
 const authenticateAdmin = require('../middlewares/authenticateAdmin');
+const sanitizeConteudo  = require('../middlewares/sanitizeHtml');
 
 const router = express.Router();
 
@@ -60,7 +61,7 @@ router.get('/:id', validarId, validar, async (req, res, next) => {
 });
 
 // POST /locais
-router.post('/', authenticateAdmin, validacoesCorpo, validar, async (req, res, next) => {
+router.post('/', authenticateAdmin, sanitizeConteudo, validacoesCorpo, validar, async (req, res, next) => {
   try {
     const { nome, descricao, conteudo, latitude, longitude, foto_url } = req.body;
     const novo = await Local.create({ nome, descricao, conteudo, latitude, longitude, foto_url });
@@ -71,7 +72,7 @@ router.post('/', authenticateAdmin, validacoesCorpo, validar, async (req, res, n
 });
 
 // PUT /locais/:id
-router.put('/:id', authenticateAdmin, [...validarId, ...validacoesCorpo], validar, async (req, res, next) => {
+router.put('/:id', authenticateAdmin, sanitizeConteudo, [...validarId, ...validacoesCorpo], validar, async (req, res, next) => {
   try {
     const id = Number(req.params.id);
     const { nome, descricao, conteudo, latitude, longitude, foto_url } = req.body;

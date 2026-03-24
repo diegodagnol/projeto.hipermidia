@@ -24,9 +24,26 @@ const authProvider = {
   },
 
   checkAuth: () => {
-    return localStorage.getItem('admin_token')
-      ? Promise.resolve()
-      : Promise.reject();
+    const token = localStorage.getItem('admin_token');
+    if (!token) return Promise.reject();
+
+    try {
+      // Decodifica o payload sem verificar assinatura (só checar expiração localmente)
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const expirado = payload.exp && Date.now() / 1000 > payload.exp;
+      if (expirado) {
+        localStorage.removeItem('admin_token');
+        localStorage.removeItem('admin_identity');
+        return Promise.reject();
+      }
+    } catch {
+      // Token malformado
+      localStorage.removeItem('admin_token');
+      localStorage.removeItem('admin_identity');
+      return Promise.reject();
+    }
+
+    return Promise.resolve();
   },
 
   checkError: (error) => {
