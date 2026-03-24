@@ -2,9 +2,9 @@ import {
   List, Datagrid, TextField, NumberField,
   Create, Edit, SimpleForm,
   TextInput, NumberInput,
-  required, minLength, maxLength, minValue, maxValue,
-  Show, SimpleShowLayout,
+  required, maxLength, minValue, maxValue,
 } from 'react-admin';
+import RichTextInput from '../../components/RichTextInput';
 
 export const LocalList = () => (
   <List>
@@ -12,9 +12,9 @@ export const LocalList = () => (
       <TextField source="id" label="ID" />
       <TextField source="nome" label="Nome" />
       <TextField source="descricao" label="Descrição" />
-      <NumberField source="latitude" label="Latitude" />
-      <NumberField source="longitude" label="Longitude" />
-      <TextField source="foto_url" label="Foto URL" />
+      {/* <NumberField source="latitude" label="Latitude" />
+      <NumberField source="longitude" label="Longitude" /> */}
+      {/* <TextField source="foto_url" label="Foto URL" /> */}
     </Datagrid>
   </List>
 );
@@ -29,8 +29,9 @@ const LocalForm = () => (
       source="descricao" label="Descrição" fullWidth multiline rows={3}
       validate={[required('Descrição é obrigatória'), maxLength(1000)]}
     />
-    <TextInput
-      source="conteudo" label="Conteúdo (HTML)" fullWidth multiline rows={8}
+    <RichTextInput
+      source="conteudo" label="Conteúdo"
+      placeholder="Digite o conteúdo detalhado do local..."
     />
     <NumberInput
       source="latitude" label="Latitude"
