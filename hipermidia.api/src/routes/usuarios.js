@@ -1,6 +1,7 @@
 const express = require('express');
 const { body, param, validationResult } = require('express-validator');
 const Usuario = require('../models/Usuario');
+const authenticateAdmin = require('../middlewares/authenticateAdmin');
 
 const router = express.Router();
 
@@ -42,7 +43,7 @@ const validacoesAtualizar = [
 ];
 
 // GET /usuarios
-router.get('/', async (req, res, next) => {
+router.get('/', authenticateAdmin, async (req, res, next) => {
   try {
     const usuarios = await Usuario.findAll();
     res.json(usuarios);
@@ -54,6 +55,7 @@ router.get('/', async (req, res, next) => {
 // GET /usuarios/:id
 router.get(
   '/:id',
+  authenticateAdmin,
   [param('id').isInt({ min: 1 }).withMessage('ID inválido')],
   validar,
   async (req, res, next) => {
@@ -88,7 +90,7 @@ router.post('/', validacoesCriar, validar, async (req, res, next) => {
 });
 
 // PUT /usuarios/:id
-router.put('/:id', validacoesAtualizar, validar, async (req, res, next) => {
+router.put('/:id', authenticateAdmin, validacoesAtualizar, validar, async (req, res, next) => {
   try {
     const id = Number(req.params.id);
     const { nome, email, usuario } = req.body;
@@ -149,6 +151,7 @@ router.patch(
 // DELETE /usuarios/:id
 router.delete(
   '/:id',
+  authenticateAdmin,
   [param('id').isInt({ min: 1 }).withMessage('ID inválido')],
   validar,
   async (req, res, next) => {

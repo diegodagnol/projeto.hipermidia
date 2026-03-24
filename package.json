@@ -1,0 +1,10 @@
+{
+  "name": "hipermidia",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently --names \"API,ADMIN\" --prefix-colors \"cyan,magenta\" \"npm start --prefix hipermidia.api\" \"npm run dev --prefix hipermidia.admin\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

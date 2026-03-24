@@ -1,0 +1,96 @@
+/**
+ * Data provider customizado para a API do Projeto Hipermídia.
+ *
+ * Não usa paginação ainda (todos os registros retornados de uma vez),
+ * compatível com o padrão atual da API.
+ * Injeta o token JWT em todas as requisições de escrita.
+ */
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+
+function getToken() {
+  return localStorage.getItem('admin_token');
+}
+
+function authHeaders() {
+  const token = getToken();
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
+async function fetchJson(url, options = {}) {
+  const response = await fetch(url, {
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...authHeaders(),
+      ...options.headers,
+    },
+  });
+
+  if (response.status === 204) return { data: null };
+
+  const json = await response.json();
+
+  if (!response.ok) {
+    const error = new Error(json.erro || response.statusText);
+    error.status = response.status;
+    throw error;
+  }
+
+  return { data: json, status: response.status };
+}
+
+const dataProvider = {
+  getList: async (resource) => {
+    const { data } = await fetchJson(`${API_URL}/${resource}`);
+    return { data, total: data.length };
+  },
+
+  getOne: async (resource, { id }) => {
+    const { data } = await fetchJson(`${API_URL}/${resource}/${id}`);
+    return { data };
+  },
+
+  getMany: async (resource, { ids }) => {
+    const results = await Promise.all(
+      ids.map(id => fetchJson(`${API_URL}/${resource}/${id}`).then(r => r.data))
+    );
+    return { data: results };
+  },
+
+  getManyReference: async (resource, { target, id }) => {
+    const { data } = await fetchJson(`${API_URL}/${resource}?${target}=${id}`);
+    const list = Array.isArray(data) ? data : [];
+    return { data: list, total: list.length };
+  },
+
+  create: async (resource, { data }) => {
+    const result = await fetchJson(`${API_URL}/${resource}`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+    return { data: result.data };
+  },
+
+  update: async (resource, { id, data }) => {
+    const result = await fetchJson(`${API_URL}/${resource}/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+    return { data: result.data };
+  },
+
+  delete: async (resource, { id }) => {
+    await fetchJson(`${API_URL}/${resource}/${id}`, { method: 'DELETE' });
+    return { data: { id } };
+  },
+
+  deleteMany: async (resource, { ids }) => {
+    await Promise.all(
+      ids.map(id => fetchJson(`${API_URL}/${resource}/${id}`, { method: 'DELETE' }))
+    );
+    return { data: ids };
+  },
+};
+
+export default dataProvider;
