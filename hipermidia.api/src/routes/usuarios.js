@@ -42,6 +42,29 @@ const validacoesAtualizar = [
     .withMessage('Usuário pode conter apenas letras, números, _, . e -'),
 ];
 
+// GET /usuarios/ranking — classificação pública por checkpoints
+router.get('/ranking', async (req, res, next) => {
+  try {
+    const { sql, getPool } = require('../config/database');
+    const pool = await getPool();
+    const result = await pool.request().query(`
+      SELECT
+        u.id,
+        u.nome,
+        u.usuario,
+        COUNT(c.checkpoint_id) AS total_checkpoints,
+        MIN(c.created_at)      AS primeiro_checkpoint
+      FROM Usuario u
+      LEFT JOIN UsuarioCheckpoint c ON c.usuario_id = u.id
+      GROUP BY u.id, u.nome, u.usuario
+      ORDER BY total_checkpoints DESC, primeiro_checkpoint ASC
+    `);
+    res.json(result.recordset);
+  } catch (err) {
+    next(err);
+  }
+});
+
 // GET /usuarios
 router.get('/', authenticateAdmin, async (req, res, next) => {
   try {

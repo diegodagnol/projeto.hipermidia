@@ -2,6 +2,7 @@ const express = require('express');
 const jwt     = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
 const AdminUsuario = require('../models/AdminUsuario');
+const Usuario = require('../models/Usuario');
 
 const router = express.Router();
 
@@ -41,6 +42,42 @@ router.post(
       res.json({
         token,
         admin: { id: admin.id, nome: admin.nome, email: admin.email },
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+// POST /auth/login — usuário comum
+router.post(
+  '/login',
+  [
+    body('email').trim().isEmail().withMessage('E-mail inválido').normalizeEmail(),
+    body('senha').notEmpty().withMessage('Senha é obrigatória'),
+  ],
+  validar,
+  async (req, res, next) => {
+    try {
+      const { email, senha } = req.body;
+
+      const usuario = await Usuario.findByEmail(email);
+
+      if (!usuario) {
+        return res.status(401).json({ erro: 'Credenciais inválidas' });
+      }
+
+      const senhaCorreta = await Usuario.verificarSenha(senha, usuario.senha);
+      if (!senhaCorreta) {
+        return res.status(401).json({ erro: 'Credenciais inválidas' });
+      }
+
+      const payload = { sub: usuario.id, nome: usuario.nome, email: usuario.email, usuario: usuario.usuario };
+      const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '24h' });
+
+      res.json({
+        token,
+        usuario: { id: usuario.id, nome: usuario.nome, email: usuario.email, usuario: usuario.usuario },
       });
     } catch (err) {
       next(err);
