@@ -31,6 +31,8 @@ html, body, #root {
   height: 100%;
   font-family: $font-ui;
   color: $texto;
+}
+html, body{
   background: $cinza-bg;
 }
 
@@ -47,6 +49,7 @@ button {
 // ─── Botões ───────────────────────────────────────────────────────────────────
 .btn {
   @include btn-base;
+  padding: 1rem 2rem;
 
   &-primario {
     background: $azul;
@@ -57,12 +60,13 @@ button {
   }
 
   &-secundario {
-    background: transparent;
-    color: #fff;
-    border: 1.5px solid rgba(255, 255, 255, 0.7);
+    background: $cinza-light;
+    color: $azul;
     width: 100%;
 
-    &:hover { background: rgba(255, 255, 255, 0.1); }
+    &:hover { 
+      background: $cinza-light-hover;
+     }
   }
 
   &-perigo {
