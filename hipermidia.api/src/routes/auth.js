@@ -49,19 +49,23 @@ router.post(
   }
 );
 
-// POST /auth/login — usuário comum
+// POST /auth/login — usuário comum (aceita e-mail ou nome de usuário)
 router.post(
   '/login',
   [
-    body('email').trim().isEmail().withMessage('E-mail inválido').normalizeEmail(),
+    body('identificador').trim().notEmpty().withMessage('Informe seu e-mail ou usuário'),
     body('senha').notEmpty().withMessage('Senha é obrigatória'),
   ],
   validar,
   async (req, res, next) => {
     try {
-      const { email, senha } = req.body;
+      const { identificador, senha } = req.body;
 
-      const usuario = await Usuario.findByEmail(email);
+      // Detecta o tipo pelo "@": com arroba → e-mail, sem arroba → nome de usuário
+      const ehEmail = identificador.includes('@');
+      const usuario = ehEmail
+        ? await Usuario.findByEmail(identificador.toLowerCase())
+        : await Usuario.findByUsuario(identificador);
 
       if (!usuario) {
         return res.status(401).json({ erro: 'Credenciais inválidas' });

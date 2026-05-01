@@ -25,11 +25,21 @@ export default function Cadastro() {
       navigate('/mapa');
     } catch (err) {
       if (err?.erros) {
+        // Erros de validação do express-validator (array)
         const mapa = {};
         err.erros.forEach(e => { mapa[e.path] = e.msg; });
         setErros(mapa);
+      } else if (err?.erro) {
+        // Erros de conflito (409) — mapeia para o campo correto
+        const msg = err.erro;
+        if (msg.toLowerCase().includes('e-mail'))
+          setErros({ email: msg });
+        else if (msg.toLowerCase().includes('usuário') || msg.toLowerCase().includes('usuario'))
+          setErros({ usuario: msg });
+        else
+          setErros({ geral: msg });
       } else {
-        setErros({ geral: err?.erro || 'Erro ao cadastrar. Tente novamente.' });
+        setErros({ geral: 'Erro ao cadastrar. Tente novamente.' });
       }
     } finally {
       setCarregando(false);

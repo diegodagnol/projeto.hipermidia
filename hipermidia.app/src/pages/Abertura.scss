@@ -2,17 +2,32 @@
 
 body {
     background: #003495;
-    //background: linear-gradient(146deg,rgba(0, 81, 232, 1) 0%, rgba(32, 89, 221, 1) 49%, rgba(133, 49, 149, 1) 100%) !important;
 }
 
 .abertura {
     width: 100%;
-    height: 100dvh; // dvh evita o bug do 100vh no iOS Safari (inclui barra do browser)
+    height: 100dvh;
     display: flex;
     justify-content: center;
     padding: 3rem 2rem;
-    //overflow: hidden;
 
+    // ── Logo centrado (estado inicial) ────────────────────────────────────────
+    .logo-abertura {
+        position: absolute;
+        left: calc(50% - 36px);
+        top: calc(50% - 48px);
+        z-index: 2;
+    }
+
+    // ── Logo no canto (estado formulário) ─────────────────────────────────────
+    .logo-abertura-topo {
+        position: absolute;
+        top: 3rem;
+        left: 2rem;
+        z-index: 2;
+    }
+
+    // ── Container dos botões ──────────────────────────────────────────────────
     .container-abertura {
         width: 100%;
         height: 100%;
@@ -22,34 +37,32 @@ body {
         justify-content: end;
     }
 
-    .logo-abertura {
-        position: absolute;
-        // Centraliza sem usar transform — evita conflito com transforms do Framer Motion no iOS
-        left: calc(50% - 36px); // 36px = metade dos 72px de largura do SVG
-        top: calc(50% - 48px);  // 48px = metade dos 96px de altura do SVG
+    .btn-group-abertura {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
         z-index: 1;
     }
 
+    // ── Esferas decorativas ───────────────────────────────────────────────────
     .circle-bg {
         position: absolute;
         top: 0;
-        //overflow: hidden;
         width: 100%;
         height: 100dvh;
         left: 0;
+        pointer-events: none;
+        overflow: hidden;
 
         &__1,
-        &__2{
+        &__2 {
             position: absolute;
             width: 159px;
             height: 159px;
-            // Promove cada círculo para sua própria camada GPU —
-            // impede que o blur interfira no compositing das animações
             transform: translateZ(0);
             will-change: transform;
             background: #D9D9D9;
             filter: blur(100px);
-
         }
 
         &__1 {
@@ -63,10 +76,75 @@ body {
         }
     }
 
-    .btn-group-abertura {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-        z-index: 1;
+    .container-login {
+        max-width: 420px;
+        margin: 0 auto;
+    }
+
+    // ── Painel branco deslizante ──────────────────────────────────────────────
+    .painel-form {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: $branco;
+        border-radius: 28px 28px 0 0;
+        z-index: 10;
+        padding: 20px 24px calc(env(safe-area-inset-bottom, 0px) + 32px);
+        min-height: 68dvh;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+
+        &__voltar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: none;
+            background: $cinza-bg;
+            color: $texto;
+            cursor: pointer;
+            margin-bottom: 24px;
+            transition: background 0.15s;
+
+            &:hover { background: $cinza-borda; }
+        }
+
+        &__titulo {
+            font-size: 24px;
+            font-weight: 700;
+            color: $texto;
+            margin-bottom: 24px;
+        }
+
+        &__form {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        &__link {
+            text-align: center;
+            font-size: 14px;
+            color: $texto-suave;
+            margin-top: 4px;
+
+            button {
+                background: none;
+                border: none;
+                color: $azul;
+                font-weight: 600;
+                font-size: 14px;
+                font-family: $font-ui;
+                cursor: pointer;
+                padding: 0;
+            }
+        }
+
+        .btn-primario {
+            margin-top: 6px;
+        }
     }
 }

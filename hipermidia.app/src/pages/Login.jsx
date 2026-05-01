@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext';
 export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
-  const [form, setForm] = useState({ email: '', senha: '' });
+  const [form, setForm] = useState({ identificador: '', senha: '' });
   const [erro, setErro] = useState('');
   const [carregando, setCarregando] = useState(false);
 
@@ -18,7 +18,7 @@ export default function Login() {
     setErro('');
     setCarregando(true);
     try {
-      await login(form.email, form.senha);
+      await login(form.identificador, form.senha);
       navigate('/mapa');
     } catch (err) {
       setErro(err?.erro || 'Credenciais inválidas. Verifique e tente novamente.');
@@ -43,13 +43,14 @@ export default function Login() {
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
           <div className="campo">
             <input
-              name="email"
-              type="email"
-              autoComplete="email"
+              name="identificador"
+              type="text"
+              autoComplete="username"
+              autoCapitalize="none"
               required
-              value={form.email}
+              value={form.identificador}
               onChange={handleChange}
-              placeholder="E-mail"
+              placeholder="E-mail ou usuário"
             />
           </div>
           <div className="campo">
