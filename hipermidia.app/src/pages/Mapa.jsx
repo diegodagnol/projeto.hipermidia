@@ -146,10 +146,27 @@ export default function Mapa() {
           style={{ height: '100%', width: '100%' }}
           zoomControl={false}
         >
+          {/* ── Tile layer — troque a linha `url` para mudar o estilo do mapa ──────
+              🔵 Light (atual):     CartoDB Positron — limpo, sem distrações
+              🛰️  Satélite/3D:       Esri World Imagery — fotografia aérea
+              🗺️  Padrão OSM:        https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png
+              🏔️  Terreno:           https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png
+          ─────────────────────────────────────────────────────────────────────── */}
+
+          {/* 🔵 Light */}
           <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            attribution='&copy; <a href="https://carto.com/">CartoDB</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+            subdomains="abcd"
+            maxZoom={20}
           />
+
+          {/* 🛰️ Satélite — descomente para usar
+          <TileLayer
+            attribution='Tiles &copy; Esri &mdash; Source: Esri, Maxar, Earthstar Geographics'
+            url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+            maxZoom={19}
+          /> */}
           <CentralizarUsuario posicao={posicao} />
 
           {posicao && (
