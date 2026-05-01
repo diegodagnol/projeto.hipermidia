@@ -1,0 +1,273 @@
+@use 'styles/variables' as *;
+@use 'styles/mixins' as *;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Work+Sans:wght@400;500;600;700&display=swap');
+
+// ─── Reset ────────────────────────────────────────────────────────────────────
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+// ─── CSS Custom Properties (para uso inline no JSX) ───────────────────────────
+:root {
+  --azul:         #{$azul};
+  --azul-hover:   #{$azul-hover};
+  --cinza-bg:     #{$cinza-bg};
+  --cinza-borda:  #{$cinza-borda};
+  --texto:        #{$texto};
+  --texto-suave:  #{$texto-suave};
+  --branco:       #{$branco};
+  --verde:        #{$verde};
+  --vermelho:     #{$vermelho};
+  --amarelo:      #{$amarelo};
+  --raio:         #{$raio};
+  --sombra:       #{$sombra};
+}
+
+// ─── Base ─────────────────────────────────────────────────────────────────────
+html, body, #root {
+  height: 100%;
+  font-family: $font-ui;
+  color: $texto;
+  background: $cinza-bg;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  cursor: pointer;
+  font-family: inherit;
+}
+
+// ─── Botões ───────────────────────────────────────────────────────────────────
+.btn {
+  @include btn-base;
+
+  &-primario {
+    background: $azul;
+    color: #fff;
+    width: 100%;
+
+    &:hover { background: $azul-hover; }
+  }
+
+  &-secundario {
+    background: transparent;
+    color: #fff;
+    border: 1.5px solid rgba(255, 255, 255, 0.7);
+    width: 100%;
+
+    &:hover { background: rgba(255, 255, 255, 0.1); }
+  }
+
+  &-perigo {
+    background: $vermelho;
+    color: #fff;
+  }
+}
+
+// ─── Campos ───────────────────────────────────────────────────────────────────
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  label {
+    font-size: 13px;
+    font-weight: 600;
+    color: $texto-suave;
+  }
+
+  input,
+  textarea {
+    @include input-base;
+  }
+}
+
+.erro-campo {
+  font-size: 12px;
+  color: $vermelho;
+  margin-top: 2px;
+}
+
+// ─── Card ─────────────────────────────────────────────────────────────────────
+.card {
+  @include card;
+}
+
+// ─── Nav inferior ─────────────────────────────────────────────────────────────
+.nav-inferior {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: $branco;
+  border-top: 1px solid $cinza-borda;
+  display: flex;
+  align-items: flex-end;
+  z-index: 1000;
+  height: $nav-h;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+
+  &-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 500;
+    color: $texto-suave;
+    transition: color 0.15s;
+    padding-bottom: 12px;
+    text-decoration: none;
+
+    svg { width: 22px; height: 22px; }
+
+    &.ativo,
+    &:hover { color: $azul; }
+  }
+
+  &-centro {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 12px;
+
+    &-btn {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: $azul;
+      color: #fff;
+      border: none;
+      @include flex-center;
+      box-shadow: 0 4px 16px rgba(0, 81, 232, 0.45);
+      margin-top: -28px;
+      transition: background 0.15s, transform 0.15s;
+      text-decoration: none;
+
+      &:hover      { background: $azul-hover; transform: scale(1.05); }
+      &.ativo      { background: $azul-hover; }
+    }
+  }
+}
+
+// ─── Header ───────────────────────────────────────────────────────────────────
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: $branco;
+  color: $texto;
+  height: $header-h;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  font-size: 17px;
+  font-weight: 700;
+  z-index: 1000;
+  gap: 10px;
+  border-bottom: 1px solid $cinza-borda;
+
+  &-btn-voltar {
+    background: none;
+    border: none;
+    color: $texto;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+  }
+}
+
+// ─── Layout de página ─────────────────────────────────────────────────────────
+.pagina {
+  padding-top: $header-h;
+  padding-bottom: $nav-h;
+  min-height: 100%;
+  overflow-y: auto;
+
+  &-conteudo {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+}
+
+// ─── Animações ────────────────────────────────────────────────────────────────
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.fade-up {
+  @include fade-up;
+}
+
+// ─── Barra de progresso ───────────────────────────────────────────────────────
+.barra-progresso {
+  height: 8px;
+  background: $cinza-borda;
+  border-radius: 99px;
+  overflow: hidden;
+
+  &-fill {
+    height: 100%;
+    background: $azul;
+    border-radius: 99px;
+    transition: width 0.4s ease;
+  }
+}
+
+// ─── Modal overlay ────────────────────────────────────────────────────────────
+.modal {
+  &-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    @include flex-center;
+    z-index: 9000;
+    padding: 24px;
+  }
+
+  &-card {
+    @include card(28px 24px);
+    width: 100%;
+    max-width: 320px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+
+// ─── Menu item (Perfil) ───────────────────────────────────────────────────────
+.menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: $branco;
+  border-bottom: 1px solid $cinza-borda;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.1s;
+
+  &:hover                 { background: $cinza-bg; }
+  &:first-child           { border-radius: $raio $raio 0 0; }
+  &:last-child            { border-bottom: none; border-radius: 0 0 $raio $raio; }
+}

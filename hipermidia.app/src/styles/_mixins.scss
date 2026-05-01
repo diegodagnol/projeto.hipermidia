@@ -1,0 +1,67 @@
+@use 'variables' as *;
+
+// ─── Flex center ──────────────────────────────────────────────────────────────
+@mixin flex-center($direction: row) {
+  display: flex;
+  flex-direction: $direction;
+  align-items: center;
+  justify-content: center;
+}
+
+// ─── Card base ────────────────────────────────────────────────────────────────
+@mixin card($padding: 20px) {
+  background: $branco;
+  border-radius: $raio;
+  box-shadow: $sombra;
+  padding: $padding;
+}
+
+// ─── Botão base ───────────────────────────────────────────────────────────────
+@mixin btn-base {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 14px 20px;
+  border: none;
+  border-radius: $raio-btn;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: $font-ui;
+  cursor: pointer;
+  transition: background 0.15s, opacity 0.15s;
+
+  &:disabled {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+}
+
+// ─── Input base ───────────────────────────────────────────────────────────────
+@mixin input-base {
+  padding: 13px 14px;
+  border: 1.5px solid $cinza-borda;
+  border-radius: $raio-input;
+  font-size: 15px;
+  font-family: $font-ui;
+  background: $branco;
+  outline: none;
+  color: $texto;
+  transition: border-color 0.15s;
+
+  &::placeholder { color: $texto-suave; }
+  &:focus        { border-color: $azul; }
+}
+
+// ─── Texto truncado em N linhas ───────────────────────────────────────────────
+@mixin clamp-lines($n) {
+  display: -webkit-box;
+  -webkit-line-clamp: $n;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+// ─── Animação fade-up ─────────────────────────────────────────────────────────
+@mixin fade-up($duration: 0.25s) {
+  animation: fadeUp $duration ease;
+}

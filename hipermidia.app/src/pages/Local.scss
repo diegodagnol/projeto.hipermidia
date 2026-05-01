@@ -1,0 +1,46 @@
+@use '../styles/variables' as *;
+
+.local-conteudo {
+  line-height: 1.7;
+  font-size: 15px;
+  color: $texto;
+  font-family: $font-content;
+
+  h1, h2, h3 {
+    margin: 16px 0 8px;
+    font-weight: 700;
+  }
+
+  p          { margin-bottom: 10px; }
+  ul, ol     { padding-left: 20px; margin-bottom: 10px; }
+  li         { margin-bottom: 4px; }
+  img        { max-width: 100%; border-radius: 8px; margin: 8px 0; }
+  a          { color: $azul; text-decoration: underline; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+
+    th, td {
+      border: 1px solid $cinza-borda;
+      padding: 8px;
+    }
+  }
+
+  blockquote {
+    border-left: 3px solid $azul;
+    padding-left: 14px;
+    color: $texto-suave;
+    margin: 10px 0;
+  }
+}
+
+.spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid $cinza-borda;
+  border-top-color: $azul;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
