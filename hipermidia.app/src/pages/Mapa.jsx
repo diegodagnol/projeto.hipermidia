@@ -6,6 +6,8 @@ import 'leaflet/dist/leaflet.css';
 import { api } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import NavInferior from '../components/NavInferior';
+import bandeiraBloqueadoRaw from '../assets/bandeira-bloqueado.svg?raw';
+import bandeiraDesbloqueadoRaw from '../assets/bandeira-desbloqueado.svg?raw';
 
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -18,30 +20,17 @@ const RAIO_CHECKIN = 50;
 const CAMPUS_CENTER = [-29.1682, -51.1794];
 
 function criarBandeira(visitado) {
-  const cor = visitado ? '#0051E8' : '#E8002D';
-  const iconeInterno = visitado
-    ? `<text x="11" y="14" text-anchor="middle" font-size="10" fill="white">★</text>`
-    : '';
-  const badge = visitado
-    ? `<circle cx="20" cy="3" r="7" fill="#0051E8" stroke="white" stroke-width="1.5"/>
-       <text x="20" y="7" text-anchor="middle" font-size="7" font-weight="bold" fill="white">OK</text>`
-    : '';
-
+  const raw = visitado ? bandeiraDesbloqueadoRaw : bandeiraBloqueadoRaw;
+  // Substitui width/height do SVG para exibir no tamanho certo no mapa
+  const svg = raw
+    .replace(/width="[^"]*"/, 'width="38"')
+    .replace(/height="[^"]*"/, 'height="62"');
   return L.divIcon({
     className: '',
-    html: `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="36" viewBox="0 0 28 36">
-      <!-- Mastro -->
-      <line x1="3" y1="2" x2="3" y2="34" stroke="#555" stroke-width="2" stroke-linecap="round"/>
-      <!-- Bandeira -->
-      <path d="M3 2 L22 2 L22 18 L3 18 Z" fill="${cor}" rx="2"/>
-      <!-- Ícone interno -->
-      ${iconeInterno}
-      <!-- Badge visitado -->
-      ${badge}
-    </svg>`,
-    iconSize: [28, 36],
-    iconAnchor: [3, 34],
-    popupAnchor: [11, -36],
+    html: svg,
+    iconSize: [38, 62],
+    iconAnchor: [8, 60],   // base do mastro (x≈8, y=fundo)
+    popupAnchor: [19, -10],
   });
 }
 
@@ -94,9 +83,9 @@ export default function Mapa() {
 
   useEffect(() => {
     api.get('/locais').then(setLocais).catch(console.error);
-    api.get(`/usuarios/${usuario.id}/checkpoints`)
-      .then(data => setCheckpoints(new Set(data.map(c => c.checkpoint_id))))
-      .catch(console.error);
+    // api.get(`/usuarios/${usuario.id}/checkpoints`)
+    //   .then(data => setCheckpoints(new Set(data.map(c => c.checkpoint_id))))
+    //   .catch(console.error);
   }, [usuario.id]);
 
   useEffect(() => {
