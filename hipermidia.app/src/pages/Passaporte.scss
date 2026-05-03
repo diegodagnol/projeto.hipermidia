@@ -1,0 +1,109 @@
+@use '../styles/variables' as *;
+
+.passaporte {
+  &-busca {
+    position: relative;
+
+    &-icone {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--texto-suave);
+      pointer-events: none;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px 14px 12px 42px;
+      border: 1.5px solid var(--cinza-borda);
+      border-radius: 12px;
+      font-size: 15px;
+      font-family: $font-ui;
+      background: #fff;
+      outline: none;
+      color: var(--texto);
+      box-sizing: border-box;
+
+      &:focus {
+        border-color: var(--azul);
+      }
+    }
+  }
+
+  &-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  &-vazio {
+    text-align: center;
+    padding: 40px 0;
+    color: var(--texto-suave);
+  }
+
+  &-card {
+    background: #fff;
+    border-radius: var(--raio);
+    padding: 12px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: var(--sombra);
+    position: relative;
+
+    &-imagem {
+      width: 80px;
+      height: 80px;
+      border-radius: 10px;
+      flex-shrink: 0;
+      background: #E8E8E8;
+      overflow: hidden;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+
+    &-texto {
+      flex: 1;
+      min-width: 0;
+    }
+
+    &-nome {
+      font-weight: 700;
+      font-size: 15px;
+      margin-bottom: 4px;
+    }
+
+    &-descricao {
+      font-size: 13px;
+      color: var(--texto-suave);
+      line-height: 1.45;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    &-badge {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--azul);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+}

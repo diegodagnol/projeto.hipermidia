@@ -9,6 +9,7 @@ import NavInferior from '../components/NavInferior';
 import bandeiraBloqueadoRaw from '../assets/bandeira-bloqueado.svg?raw';
 import bandeiraDesbloqueadoRaw from '../assets/bandeira-desbloqueado.svg?raw';
 import Contador from '../components/contador';
+import { useProgresso } from '../context/ProgressoContext';
 
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -74,6 +75,7 @@ function CentralizarUsuario({ posicao }) {
 
 export default function Mapa() {
   const { usuario } = useAuth();
+  const { incrementarVisitados } = useProgresso();
   const navigate = useNavigate();
   const [locais, setLocais] = useState([]);
   const [checkpoints, setCheckpoints] = useState(new Set());
@@ -84,9 +86,9 @@ export default function Mapa() {
 
   useEffect(() => {
     api.get('/locais').then(setLocais).catch(console.error);
-    // api.get(`/usuarios/${usuario.id}/checkpoints`)
-    //   .then(data => setCheckpoints(new Set(data.map(c => c.checkpoint_id))))
-    //   .catch(console.error);
+    api.get(`/usuarios/${usuario.id}/checkpoints`)
+      .then(data => setCheckpoints(new Set(data.map(c => c.checkpoint_id))))
+      .catch(console.error);
   }, [usuario.id]);
 
   useEffect(() => {
@@ -113,6 +115,7 @@ export default function Mapa() {
     try {
       await api.post(`/usuarios/${usuario.id}/checkpoints`, { checkpoint_id: local.id });
       setCheckpoints(prev => new Set([...prev, local.id]));
+      incrementarVisitados();
       mostrarNotificacao(`✅ "${local.nome}" desbloqueado!`);
     } catch (err) {
       mostrarNotificacao(err?.erro || 'Erro ao fazer check-in.');

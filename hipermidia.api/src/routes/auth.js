@@ -81,7 +81,7 @@ router.post(
 
       res.json({
         token,
-        usuario: { id: usuario.id, nome: usuario.nome, email: usuario.email, usuario: usuario.usuario },
+        usuario: { id: usuario.Id, nome: usuario.Nome, email: usuario.Email, usuario: usuario.usuario },
       });
     } catch (err) {
       next(err);

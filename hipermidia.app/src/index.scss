@@ -33,7 +33,7 @@ html, body, #root {
   color: $texto;
 }
 html, body{
-  background: $cinza-bg;
+  background: var(--branco);
 }
 
 a {
@@ -206,7 +206,7 @@ button {
 
 // ─── Layout de página ─────────────────────────────────────────────────────────
 .pagina {
-  padding-top: $header-h;
+  padding-top: 24px;
   padding-bottom: $nav-h;
   min-height: 100%;
   overflow-y: auto;

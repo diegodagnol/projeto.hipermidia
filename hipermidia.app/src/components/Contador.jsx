@@ -1,6 +1,4 @@
-import { useEffect, useState } from 'react';
-import { api } from '../services/api';
-import { useAuth } from '../context/AuthContext';
+import { useProgresso } from '../context/ProgressoContext';
 import './Contador.scss';
 
 const LogoSVG = ({ width = 77, height = 58 }) => (
@@ -19,28 +17,11 @@ const LogoSVG = ({ width = 77, height = 58 }) => (
 );
 
 export default function Contador({ page }) {
-  const { usuario } = useAuth();
-  const [total, setTotal] = useState(null);
-  const [visitados, setVisitados] = useState(null);
-
-  useEffect(() => {
-    if (!usuario?.id) return;
-    Promise.all([
-      api.get('/locais'),
-      api.get(`/usuarios/${usuario.id}/checkpoints`),
-    ])
-      .then(([locais, checkpoints]) => {
-        setTotal(locais.length);
-        console.log(locais.length)
-        setVisitados(checkpoints.length);
-      })
-      .catch(console.error);
-  }, [usuario?.id]);
-
+  const { total, visitados } = useProgresso();
   const label = total === null ? '…' : `${visitados}/${total}`;
 
   return (
-    <div className={`contador-locais ${page === 'mapa' ? 'contador-page-mapa' : ''}`}>
+    <div className={`contador-locais ${page === 'mapa' ? 'contador-page-mapa' : 'contador-page-padrao'}`}>
       <LogoSVG width={40} height={53} />
       <div className="contador-locais__display">
         {label}

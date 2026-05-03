@@ -7,10 +7,11 @@
 
     &__display {
         background-color: $azul;
-        padding: 8px 16px 8px 32px;
+        padding: 8px 16px 8px 24px;
         border-radius: 0px 16px 16px 0px;
         transform: translateX(-16px);
-        color:#fff
+        color:#fff;
+        font-weight: 700;
     }
 
     svg {
@@ -21,5 +22,9 @@
 .contador-page-mapa {
     position: fixed;
     top: 24px;
-    left: 24px;
+    left: 16px;
+}
+
+.contador-page-padrao {
+   padding-left: 16px;
 }

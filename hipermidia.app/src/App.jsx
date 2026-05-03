@@ -1,5 +1,6 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import { ProgressoProvider } from './context/ProgressoContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Abertura from './pages/Abertura';
 import Login from './pages/Login';
@@ -10,6 +11,17 @@ import Local from './pages/Local';
 import Perfil from './pages/Perfil';
 import Ranking from './pages/Ranking';
 
+// Layout único para rotas protegidas — ProgressoProvider persiste entre navegações
+function LayoutProtegido() {
+  return (
+    <ProtectedRoute>
+      <ProgressoProvider>
+        <Outlet />
+      </ProgressoProvider>
+    </ProtectedRoute>
+  );
+}
+
 export default function App() {
   return (
     <AuthProvider>
@@ -18,11 +30,13 @@ export default function App() {
           <Route path="/" element={<Abertura />} />
           <Route path="/login" element={<Login />} />
           <Route path="/cadastro" element={<Cadastro />} />
-          <Route path="/mapa" element={<ProtectedRoute><Mapa /></ProtectedRoute>} />
-          <Route path="/passaporte" element={<ProtectedRoute><Passaporte /></ProtectedRoute>} />
-          <Route path="/local/:id" element={<ProtectedRoute><Local /></ProtectedRoute>} />
-          <Route path="/perfil" element={<ProtectedRoute><Perfil /></ProtectedRoute>} />
-          <Route path="/ranking" element={<ProtectedRoute><Ranking /></ProtectedRoute>} />
+          <Route element={<LayoutProtegido />}>
+            <Route path="/mapa" element={<Mapa />} />
+            <Route path="/passaporte" element={<Passaporte />} />
+            <Route path="/local/:id" element={<Local />} />
+            <Route path="/perfil" element={<Perfil />} />
+            <Route path="/ranking" element={<Ranking />} />
+          </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>
