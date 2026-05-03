@@ -8,6 +8,7 @@ import { useAuth } from '../context/AuthContext';
 import NavInferior from '../components/NavInferior';
 import bandeiraBloqueadoRaw from '../assets/bandeira-bloqueado.svg?raw';
 import bandeiraDesbloqueadoRaw from '../assets/bandeira-desbloqueado.svg?raw';
+import Contador from '../components/contador';
 
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -128,23 +129,18 @@ export default function Mapa() {
   return (
     <div style={{ height: '100dvh', display: 'flex', flexDirection: 'column' }}>
       {/* Mapa ocupa tela inteira */}
-      <div style={{ flex: 1, paddingBottom: 89 }}>
+      <div className='mapa-box'>
         <MapContainer
           center={CAMPUS_CENTER}
           zoom={16}
           style={{ height: '100%', width: '100%' }}
           zoomControl={false}
         >
-          {/* ── Tile layer — troque a linha `url` para mudar o estilo do mapa ──────
-              🔵 Light (atual):     CartoDB Positron — limpo, sem distrações
-              🛰️  Satélite/3D:       Esri World Imagery — fotografia aérea
-              🗺️  Padrão OSM:        https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png
-              🏔️  Terreno:           https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png
-          ─────────────────────────────────────────────────────────────────────── */}
+        
 
           {/* 🔵 Light */}
           <TileLayer
-            attribution='&copy; <a href="https://carto.com/">CartoDB</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            //attribution='&copy; <a href="https://carto.com/">CartoDB</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
             url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
             subdomains="abcd"
             maxZoom={20}
@@ -238,6 +234,8 @@ export default function Mapa() {
           {notificacao}
         </div>
       )}
+
+      <Contador page="mapa"/>
 
       <NavInferior ativo="mapa" />
     </div>

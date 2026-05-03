@@ -41,11 +41,13 @@ export default function Perfil() {
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             flexShrink: 0,
           }}>
-            {usuario.nome.charAt(0).toUpperCase()}
+            {usuario.nome}
+            
           </div>
           <div>
             <p style={{ fontWeight: 700, fontSize: 18 }}>{usuario.nome}</p>
             <p style={{ color: 'var(--texto-suave)', fontSize: 14, marginTop: 2 }}>@{usuario.usuario}</p>
+            
           </div>
         </div>
 

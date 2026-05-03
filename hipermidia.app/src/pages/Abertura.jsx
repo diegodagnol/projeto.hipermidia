@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate, Navigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../context/AuthContext";
@@ -160,6 +160,14 @@ export default function Abertura() {
   const { usuario } = useAuth();
   const [tela, setTela] = useState('inicio'); // 'inicio' | 'login' | 'cadastro'
   const isInicio = tela === 'inicio';
+
+  useEffect(() => {
+    document.body.classList.add('body-login');
+
+    return () => {
+      document.body.classList.remove('body-login');
+    };
+  }, []);
 
   if (usuario) return <Navigate to="/mapa" replace />;
 

@@ -1,0 +1,25 @@
+@use '../styles/variables' as *;
+
+.contador-locais {
+    display: flex;
+    align-items: center;
+    z-index: 999;
+
+    &__display {
+        background-color: $azul;
+        padding: 8px 16px 8px 32px;
+        border-radius: 0px 16px 16px 0px;
+        transform: translateX(-16px);
+        color:#fff
+    }
+
+    svg {
+        z-index: 2;
+    }
+}
+
+.contador-page-mapa {
+    position: fixed;
+    top: 24px;
+    left: 24px;
+}
