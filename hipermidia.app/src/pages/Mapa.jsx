@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MapContainer, TileLayer, Marker, Popup, Circle, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Circle, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { api } from '../services/api';
@@ -10,6 +10,7 @@ import bandeiraBloqueadoRaw from '../assets/bandeira-bloqueado.svg?raw';
 import bandeiraDesbloqueadoRaw from '../assets/bandeira-desbloqueado.svg?raw';
 import Contador from '../components/contador';
 import { useProgresso } from '../context/ProgressoContext';
+import './Mapa.scss';
 
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -25,13 +26,13 @@ function criarBandeira(visitado) {
   const raw = visitado ? bandeiraDesbloqueadoRaw : bandeiraBloqueadoRaw;
   // Substitui width/height do SVG para exibir no tamanho certo no mapa
   const svg = raw
-    .replace(/width="[^"]*"/, 'width="38"')
-    .replace(/height="[^"]*"/, 'height="62"');
+    .replace(/width="[^"]*"/, 'width="72"')
+    .replace(/height="[^"]*"/, 'height="118"');
   return L.divIcon({
     className: '',
     html: svg,
-    iconSize: [38, 62],
-    iconAnchor: [8, 60],   // base do mastro (x≈8, y=fundo)
+    iconSize: [72, 118],
+    iconAnchor: [-5, 118],   // base do mastro (x≈8, y=fundo)
     popupAnchor: [19, -10],
   });
 }
@@ -83,6 +84,8 @@ export default function Mapa() {
   const [erroGeo, setErroGeo] = useState('');
   const [checkinEmAndamento, setCheckinEmAndamento] = useState(null);
   const [notificacao, setNotificacao] = useState('');
+  const [localBloqueado, setLocalBloqueado] = useState(null);
+  const [localVisitado, setLocalVisitado] = useState(null);
 
   useEffect(() => {
     api.get('/locais').then(setLocais).catch(console.error);
@@ -130,7 +133,7 @@ export default function Mapa() {
   }
 
   return (
-    <div style={{ height: '100dvh', display: 'flex', flexDirection: 'column' }}>
+    <div className="mapa-pagina">
       {/* Mapa ocupa tela inteira */}
       <div className='mapa-box'>
         <MapContainer
@@ -170,71 +173,82 @@ export default function Mapa() {
 
           {locais.map(local => {
             const visitado = checkpoints.has(local.id);
-            const distancia = distanciaParaLocal(local);
-            const dentroDoRaio = distancia !== null && distancia <= RAIO_CHECKIN;
 
             return (
               <Marker
                 key={local.id}
                 position={[Number(local.latitude), Number(local.longitude)]}
                 icon={criarBandeira(visitado)}
-              >
-                <Popup>
-                  <div style={{ minWidth: 180 }}>
-                    <strong style={{ fontSize: 15 }}>{local.nome}</strong>
-                    <p style={{ fontSize: 13, color: '#8E8E93', margin: '4px 0 10px' }}>{local.descricao}</p>
-                    {visitado ? (
-                      <button
-                        style={{ width: '100%', padding: '9px', background: '#0051E8', color: '#fff', border: 'none', borderRadius: 24, fontWeight: 600, cursor: 'pointer', fontSize: 13 }}
-                        onClick={() => navigate(`/local/${local.id}`)}
-                      >
-                        Ver conteúdo
-                      </button>
-                    ) : dentroDoRaio ? (
-                      <button
-                        style={{ width: '100%', padding: '9px', background: '#0051E8', color: '#fff', border: 'none', borderRadius: 24, fontWeight: 600, cursor: 'pointer', fontSize: 13 }}
-                        onClick={() => fazerCheckin(local)}
-                        disabled={!!checkinEmAndamento}
-                      >
-                        {checkinEmAndamento === local.id ? 'Registrando...' : 'Fazer Check-in'}
-                      </button>
-                    ) : (
-                      <p style={{ fontSize: 12, color: '#8E8E93', textAlign: 'center' }}>
-                        {distancia !== null
-                          ? `${Math.round(distancia)}m de distância`
-                          : 'Aguardando localização...'}
-                      </p>
-                    )}
-                  </div>
-                </Popup>
-              </Marker>
+                eventHandlers={{ click: () => visitado ? setLocalVisitado(local) : setLocalBloqueado(local) }}
+              />
             );
           })}
         </MapContainer>
       </div>
 
-      {/* Aviso erro de geolocalização */}
       {erroGeo && (
-        <div style={{
-          position: 'fixed', top: 16, left: 16, right: 16,
-          background: '#fef3c7', border: '1px solid #d97706',
-          borderRadius: 12, padding: '10px 14px',
-          fontSize: 13, color: '#92400e', zIndex: 1002,
-        }}>
-          ⚠️ {erroGeo}
-        </div>
+        <div className="mapa-aviso mapa-aviso--geo">⚠️ {erroGeo}</div>
       )}
 
-      {/* Notificação de check-in */}
       {notificacao && (
-        <div style={{
-          position: 'fixed', top: 16, left: 16, right: 16,
-          background: '#f0fdf4', border: '1px solid #16a34a',
-          borderRadius: 12, padding: '12px 16px',
-          fontSize: 14, fontWeight: 600, color: '#15803d', zIndex: 1002,
-          animation: 'fadeUp 0.2s ease',
-        }}>
-          {notificacao}
+        <div className="mapa-aviso mapa-aviso--checkin">{notificacao}</div>
+      )}
+
+      {localBloqueado && (() => {
+        const dist = distanciaParaLocal(localBloqueado);
+        const dentroDoRaio = dist !== null && dist <= RAIO_CHECKIN;
+        return (
+          <div className="modal-overlay">
+            <div className="modal-card">
+              <p className="modal-local__icone">🔒</p>
+              <h2>Local Bloqueado</h2>
+              <h3 className="modal-local__titulo">{localBloqueado.nome}</h3>
+              <p className="modal-local__texto">
+                {dist !== null ? `${Math.round(dist)}m de distância` : 'Aguardando localização...'}
+              </p>
+              <p className="modal-local__texto">
+                Aproxime-se para fazer o check-in e desbloquear o conteúdo deste local.
+              </p>
+              {dentroDoRaio ? (
+                <button
+                  className="btn btn-primario"
+                  onClick={async () => { await fazerCheckin(localBloqueado); setLocalBloqueado(null); }}
+                  disabled={!!checkinEmAndamento}
+                >
+                  {checkinEmAndamento === localBloqueado.id ? 'Registrando...' : 'Fazer Check-in'}
+                </button>
+              ) : (
+                <button
+                  className="btn btn-primario"
+                  onClick={() => setLocalBloqueado(null)}
+                >
+                  Entendi!
+                </button>
+              )}
+            </div>
+          </div>
+        );
+      })()}
+
+      {localVisitado && (
+        <div className="modal-overlay">
+          <div className="modal-card">
+            <button className="modal-local__fechar btn btn-secondary" onClick={() => setLocalVisitado(null)}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+                <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
+              </svg>
+            </button>
+            <h3 className="modal-local__titulo">{localVisitado.nome}</h3>
+            {localVisitado.descricao && (
+              <p className="modal-local__texto">{localVisitado.descricao}</p>
+            )}
+            <button
+              className="btn btn-primario"
+              onClick={() => { setLocalVisitado(null); navigate(`/local/${localVisitado.id}`); }}
+            >
+              Ver conteúdo completo
+            </button>
+          </div>
         </div>
       )}
 

@@ -1,0 +1,64 @@
+@use '../styles/variables' as *;
+
+.mapa-pagina {
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+// ─── Avisos flutuantes ────────────────────────────────────────────────────────
+.mapa-aviso {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  right: 16px;
+  border-radius: 12px;
+  padding: 10px 14px;
+  z-index: 1002;
+
+  &--geo {
+    background: #fef3c7;
+    border: 1px solid #d97706;
+    font-size: 13px;
+    color: #92400e;
+  }
+
+  &--checkin {
+    background: #f0fdf4;
+    border: 1px solid #16a34a;
+    font-size: 14px;
+    font-weight: 600;
+    color: #15803d;
+    animation: fadeUp 0.2s ease;
+  }
+}
+
+// ─── Conteúdo dos modais de local ─────────────────────────────────────────────
+.modal-local {
+  &__icone { font-size: 28px; }
+
+  &__titulo {
+    font-size: 17px;
+    font-weight: 700;
+  }
+
+  &__texto {
+    font-size: 14px;
+    color: var(--texto-suave);
+    line-height: 1.55;
+  }
+
+  &__fechar {
+    color: var(--texto-suave);
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 50%;
+    color: $azul;
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: translate(50%, -50%);
+    padding: 1rem;
+  }
+}
