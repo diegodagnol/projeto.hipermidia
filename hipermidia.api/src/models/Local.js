@@ -79,4 +79,20 @@ async function remove(id) {
   return result.recordset[0] || null;
 }
 
-module.exports = { findAll, findById, create, update, remove };
+async function updateFoto(id, foto_url) {
+  const pool = await getPool();
+  const result = await pool
+    .request()
+    .input('id',       sql.Int,           id)
+    .input('foto_url', sql.NVarChar(500), foto_url)
+    .query(`
+      UPDATE Local
+      SET foto_url   = @foto_url,
+          updated_at = GETDATE()
+      OUTPUT INSERTED.id, INSERTED.foto_url
+      WHERE id = @id
+    `);
+  return result.recordset[0] || null;
+}
+
+module.exports = { findAll, findById, create, update, updateFoto, remove };

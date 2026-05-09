@@ -1,7 +1,8 @@
 import {
-  List, Datagrid, TextField, NumberField,
+  List, Datagrid, TextField,
   Create, Edit, SimpleForm,
   TextInput, NumberInput,
+  ImageInput, ImageField,
   required, maxLength, minValue, maxValue,
 } from 'react-admin';
 import RichTextInput from '../../components/RichTextInput';
@@ -41,10 +42,9 @@ const LocalForm = () => (
       source="longitude" label="Longitude"
       validate={[required('Longitude é obrigatória'), minValue(-180), maxValue(180)]}
     />
-    <TextInput
-      source="foto_url" label="URL da Foto" fullWidth
-      validate={[maxLength(500)]}
-    />
+    <ImageInput source="foto" label="Foto de Capa" accept={{ 'image/*': [] }} maxSize={5242880}>
+      <ImageField source="src" title="title" />
+    </ImageInput>
   </SimpleForm>
 );
 

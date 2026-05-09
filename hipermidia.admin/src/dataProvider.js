@@ -48,6 +48,12 @@ const dataProvider = {
 
   getOne: async (resource, { id }) => {
     const { data } = await fetchJson(`${API_URL}/${resource}/${id}`);
+    if (resource === 'locais' && data.foto_url) {
+      const src = data.foto_url.startsWith('http')
+        ? data.foto_url
+        : `${API_URL}${data.foto_url}`;
+      data.foto = { src, title: data.nome };
+    }
     return { data };
   },
 
@@ -65,17 +71,58 @@ const dataProvider = {
   },
 
   create: async (resource, { data }) => {
+    const payload = { ...data };
+    const fileToUpload = resource === 'locais' ? payload.foto?.rawFile : null;
+    delete payload.foto;
+
     const result = await fetchJson(`${API_URL}/${resource}`, {
       method: 'POST',
-      body: JSON.stringify(data),
+      body: JSON.stringify(payload),
     });
-    return { data: result.data };
+
+    const created = result.data;
+
+    if (fileToUpload) {
+      const formData = new FormData();
+      formData.append('foto', fileToUpload);
+      const resp = await fetch(`${API_URL}/locais/${created.id}/upload`, {
+        method: 'POST',
+        headers: authHeaders(),
+        body: formData,
+      });
+      if (resp.ok) {
+        const { foto_url } = await resp.json();
+        created.foto_url = foto_url;
+      }
+    }
+
+    return { data: created };
   },
 
   update: async (resource, { id, data }) => {
+    const payload = { ...data };
+
+    if (resource === 'locais') {
+      if (payload.foto?.rawFile) {
+        const formData = new FormData();
+        formData.append('foto', payload.foto.rawFile);
+        const resp = await fetch(`${API_URL}/locais/${id}/upload`, {
+          method: 'POST',
+          headers: authHeaders(),
+          body: formData,
+        });
+        if (!resp.ok) throw new Error('Erro ao fazer upload da imagem');
+        const { foto_url } = await resp.json();
+        payload.foto_url = foto_url;
+      } else if (payload.foto === null) {
+        payload.foto_url = null;
+      }
+      delete payload.foto;
+    }
+
     const result = await fetchJson(`${API_URL}/${resource}/${id}`, {
       method: 'PUT',
-      body: JSON.stringify(data),
+      body: JSON.stringify(payload),
     });
     return { data: result.data };
   },

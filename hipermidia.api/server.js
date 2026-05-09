@@ -4,6 +4,7 @@ const express    = require('express');
 const cors       = require('cors');
 const helmet     = require('helmet');
 const rateLimit  = require('express-rate-limit');
+const path       = require('path');
 
 const authRouter     = require('./src/routes/auth');
 const usuariosRouter = require('./src/routes/usuarios');
@@ -23,6 +24,7 @@ app.use(cors({
 }));
 
 app.use(express.json());
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Rate limiting no login: máx 10 tentativas por IP a cada 15 minutos
 const loginLimiter = rateLimit({

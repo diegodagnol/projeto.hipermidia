@@ -229,6 +229,26 @@ button {
   to { transform: rotate(360deg); }
 }
 
+@keyframes modalZoomIn {
+  from { opacity: 0; transform: scale(0.85); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes modalZoomOut {
+  from { opacity: 1; transform: scale(1); }
+  to   { opacity: 0; transform: scale(0.85); }
+}
+
+@keyframes backdropFadeIn {
+  from { background: rgba(0, 0, 0, 0); }
+  to   { background: rgba(0, 0, 0, 0.45); }
+}
+
+@keyframes backdropFadeOut {
+  from { background: rgba(0, 0, 0, 0.45); }
+  to   { background: rgba(0, 0, 0, 0); }
+}
+
 .fade-up {
   @include fade-up;
 }
@@ -257,6 +277,11 @@ button {
     @include flex-center;
     z-index: 9000;
     padding: 24px;
+    animation: backdropFadeIn 0.2s ease;
+
+    &--saindo {
+      animation: backdropFadeOut 0.18s ease forwards;
+    }
   }
 
   &-card {
@@ -268,6 +293,11 @@ button {
     flex-direction: column;
     gap: 12px;
     position: relative;
+    animation: modalZoomIn 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+    &--saindo {
+      animation: modalZoomOut 0.18s cubic-bezier(0.4, 0, 1, 1) forwards;
+    }
   }
 }
 

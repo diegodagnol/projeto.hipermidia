@@ -6,6 +6,27 @@
   flex-direction: column;
 }
 
+// ─── Tela de espera de localização ───────────────────────────────────────────
+.mapa-carregando {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  color: var(--texto-suave);
+  font-size: 14px;
+
+  &__spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid $cinza-borda;
+    border-top-color: $azul;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+}
+
 // ─── Avisos flutuantes ────────────────────────────────────────────────────────
 .mapa-aviso {
   position: fixed;
@@ -30,35 +51,5 @@
     font-weight: 600;
     color: #15803d;
     animation: fadeUp 0.2s ease;
-  }
-}
-
-// ─── Conteúdo dos modais de local ─────────────────────────────────────────────
-.modal-local {
-  &__icone { font-size: 28px; }
-
-  &__titulo {
-    font-size: 17px;
-    font-weight: 700;
-  }
-
-  &__texto {
-    font-size: 14px;
-    color: var(--texto-suave);
-    line-height: 1.55;
-  }
-
-  &__fechar {
-    color: var(--texto-suave);
-    border: none;
-    font-size: 14px;
-    cursor: pointer;
-    border-radius: 50%;
-    color: $azul;
-    position: absolute;
-    top: 0;
-    right: 0;
-    transform: translate(50%, -50%);
-    padding: 1rem;
   }
 }

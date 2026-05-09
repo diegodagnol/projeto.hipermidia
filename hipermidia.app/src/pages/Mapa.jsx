@@ -10,6 +10,7 @@ import bandeiraBloqueadoRaw from '../assets/bandeira-bloqueado.svg?raw';
 import bandeiraDesbloqueadoRaw from '../assets/bandeira-desbloqueado.svg?raw';
 import Contador from '../components/contador';
 import { useProgresso } from '../context/ProgressoContext';
+import Modal from '../components/Modal';
 import './Mapa.scss';
 
 delete L.Icon.Default.prototype._getIconUrl;
@@ -134,60 +135,63 @@ export default function Mapa() {
 
   return (
     <div className="mapa-pagina">
-      {/* Mapa ocupa tela inteira */}
-      <div className='mapa-box'>
-        <MapContainer
-          center={CAMPUS_CENTER}
-          zoom={16}
-          style={{ height: '100%', width: '100%' }}
-          zoomControl={false}
-        >
-        
-
-          {/* 🔵 Light */}
-          <TileLayer
-            //attribution='&copy; <a href="https://carto.com/">CartoDB</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-            url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
-            subdomains="abcd"
-            maxZoom={20}
-          />
-
-          {/* 🛰️ Satélite — descomente para usar
-          <TileLayer
-            attribution='Tiles &copy; Esri &mdash; Source: Esri, Maxar, Earthstar Geographics'
-            url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
-            maxZoom={19}
-          /> */}
-          <CentralizarUsuario posicao={posicao} />
-
-          {posicao && (
-            <>
-              <Marker position={posicao} icon={iconeUsuario()} />
-              <Circle
-                center={posicao}
-                radius={RAIO_CHECKIN}
-                pathOptions={{ color: '#0051E8', fillColor: '#0051E8', fillOpacity: 0.08, weight: 1.5 }}
-              />
-            </>
-          )}
-
-          {locais.map(local => {
-            const visitado = checkpoints.has(local.id);
-
-            return (
-              <Marker
-                key={local.id}
-                position={[Number(local.latitude), Number(local.longitude)]}
-                icon={criarBandeira(visitado)}
-                eventHandlers={{ click: () => visitado ? setLocalVisitado(local) : setLocalBloqueado(local) }}
-              />
-            );
-          })}
-        </MapContainer>
-      </div>
+      {!posicao && !erroGeo && (
+        <div className="mapa-carregando">
+          <div className="mapa-carregando__spinner" />
+          <p>Obtendo sua localização...</p>
+        </div>
+      )}
 
       {erroGeo && (
-        <div className="mapa-aviso mapa-aviso--geo">⚠️ {erroGeo}</div>
+        <div className="mapa-carregando">
+          <p style={{ fontSize: 32 }}>📍</p>
+          <p style={{ fontWeight: 600, color: 'var(--texto)' }}>Localização bloqueada</p>
+          <p style={{ textAlign: 'center', maxWidth: 260 }}>{erroGeo}</p>
+        </div>
+      )}
+
+      {posicao && (
+        <div className='mapa-box'>
+          <MapContainer
+            center={posicao}
+            zoom={17}
+            style={{ height: '100%', width: '100%' }}
+            zoomControl={false}
+          >
+            <TileLayer
+              url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+              subdomains="abcd"
+              maxZoom={20}
+            />
+
+            {/* 🛰️ Satélite — descomente para usar
+            <TileLayer
+              attribution='Tiles &copy; Esri &mdash; Source: Esri, Maxar, Earthstar Geographics'
+              url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+              maxZoom={19}
+            /> */}
+            <CentralizarUsuario posicao={posicao} />
+
+            <Marker position={posicao} icon={iconeUsuario()} />
+            <Circle
+              center={posicao}
+              radius={RAIO_CHECKIN}
+              pathOptions={{ color: '#0051E8', fillColor: '#0051E8', fillOpacity: 0.08, weight: 1.5 }}
+            />
+
+            {locais.map(local => {
+              const visitado = checkpoints.has(local.id);
+              return (
+                <Marker
+                  key={local.id}
+                  position={[Number(local.latitude), Number(local.longitude)]}
+                  icon={criarBandeira(visitado)}
+                  eventHandlers={{ click: () => visitado ? setLocalVisitado(local) : setLocalBloqueado(local) }}
+                />
+              );
+            })}
+          </MapContainer>
+        </div>
       )}
 
       {notificacao && (
@@ -198,58 +202,35 @@ export default function Mapa() {
         const dist = distanciaParaLocal(localBloqueado);
         const dentroDoRaio = dist !== null && dist <= RAIO_CHECKIN;
         return (
-          <div className="modal-overlay">
-            <div className="modal-card">
-              <p className="modal-local__icone">🔒</p>
-              <h2>Local Bloqueado</h2>
-              <h3 className="modal-local__titulo">{localBloqueado.nome}</h3>
-              <p className="modal-local__texto">
-                {dist !== null ? `${Math.round(dist)}m de distância` : 'Aguardando localização...'}
-              </p>
-              <p className="modal-local__texto">
-                Aproxime-se para fazer o check-in e desbloquear o conteúdo deste local.
-              </p>
-              {dentroDoRaio ? (
-                <button
-                  className="btn btn-primario"
-                  onClick={async () => { await fazerCheckin(localBloqueado); setLocalBloqueado(null); }}
-                  disabled={!!checkinEmAndamento}
-                >
-                  {checkinEmAndamento === localBloqueado.id ? 'Registrando...' : 'Fazer Check-in'}
-                </button>
-              ) : (
-                <button
-                  className="btn btn-primario"
-                  onClick={() => setLocalBloqueado(null)}
-                >
-                  Entendi!
-                </button>
-              )}
-            </div>
-          </div>
+          <Modal
+            icone="🔒"
+            titulo={localBloqueado.nome}
+            botoes={dentroDoRaio
+              ? [{ label: checkinEmAndamento === localBloqueado.id ? 'Registrando...' : 'Fazer Check-in', onClick: async () => { await fazerCheckin(localBloqueado); setLocalBloqueado(null); }, disabled: !!checkinEmAndamento }]
+              : [{ label: 'Entendi!', onClick: () => setLocalBloqueado(null) }]
+            }
+          >
+            <p className="modal-local__texto">
+              {dist !== null ? `${Math.round(dist)}m de distância` : 'Aguardando localização...'}
+            </p>
+            <p className="modal-local__texto">
+              Aproxime-se para fazer o check-in e desbloquear o conteúdo deste local.
+            </p>
+          </Modal>
         );
       })()}
 
       {localVisitado && (
-        <div className="modal-overlay">
-          <div className="modal-card">
-            <button className="modal-local__fechar btn btn-secondary" onClick={() => setLocalVisitado(null)}>
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
-                <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
-              </svg>
-            </button>
-            <h3 className="modal-local__titulo">{localVisitado.nome}</h3>
-            {localVisitado.descricao && (
-              <p className="modal-local__texto">{localVisitado.descricao}</p>
-            )}
-            <button
-              className="btn btn-primario"
-              onClick={() => { setLocalVisitado(null); navigate(`/local/${localVisitado.id}`); }}
-            >
-              Ver conteúdo completo
-            </button>
-          </div>
-        </div>
+        <Modal
+          titulo={localVisitado.nome}
+          onClose={() => setLocalVisitado(null)}
+          fecharBtn
+          botoes={[{ label: 'Ver conteúdo completo', onClick: () => { setLocalVisitado(null); navigate(`/local/${localVisitado.id}`); } }]}
+        >
+          {localVisitado.descricao && (
+            <p className="modal-local__texto">{localVisitado.descricao}</p>
+          )}
+        </Modal>
       )}
 
       <Contador page="mapa"/>

@@ -1,0 +1,30 @@
+@use '../styles/variables' as *;
+
+.modal-local {
+  &__icone { font-size: 28px; }
+
+  &__titulo {
+    font-size: 17px;
+    font-weight: 700;
+  }
+
+  &__texto {
+    font-size: 14px;
+    color: var(--texto-suave);
+    line-height: 1.55;
+  }
+
+  &__fechar {
+    color: var(--texto-suave);
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 50%;
+    color: $azul;
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: translate(50%, -50%);
+    padding: 1rem;
+  }
+}

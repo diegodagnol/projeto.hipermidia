@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { api } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import './Local.scss';
+import Modal from '../components/Modal';
 
 export default function Local() {
   const { id } = useParams();
@@ -36,7 +37,7 @@ export default function Local() {
 
   if (carregando) {
     return (
-      <div style={{ height: '100dvh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div className="local-loading">
         <div className="spinner" />
       </div>
     );
@@ -45,90 +46,92 @@ export default function Local() {
   if (!local) return null;
 
   return (
-    <div style={{ minHeight: '100dvh', background: 'var(--cinza-bg)', paddingBottom: 32 }}>
-      {/* Foto de capa com back button sobreposto */}
-      <div style={{ position: 'relative', width: '100%', height: 240, background: '#E8E8E8' }}>
-        {local.foto_url && (
-          <img
-            src={local.foto_url}
-            alt={local.nome}
-            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-          />
-        )}
-        {/* Back button flutuante */}
-        <button
-          onClick={() => navigate(-1)}
-          aria-label="Voltar"
-          style={{
-            position: 'absolute', top: 16, left: 16,
-            width: 40, height: 40, borderRadius: '50%',
-            background: '#fff', border: 'none', cursor: 'pointer',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.18)',
-          }}
-        >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#111827" strokeWidth="2.5" strokeLinecap="round">
-            <path d="M15 18l-6-6 6-6"/>
-          </svg>
-        </button>
-      </div>
+      <div className="local-pagina">
+          {/* Foto de capa com back button sobreposto */}
+          <div className="local-capa">
+              {local.foto_url && (
+                  <img
+                      src={local.foto_url}
+                      alt={local.nome}
+                      className="local-capa__img"
+                  />
+              )}
+              {/* Back button flutuante */}
+              <button
+                  onClick={() => navigate(-1)}
+                  aria-label="Voltar"
+                  className="local-voltar btn btn-secundario"
+              >
+                  <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="20"
+                      height="20"
+                      fill="currentColor"
+                      class="bi bi-arrow-left-short"
+                      viewBox="0 0 16 16"
+                  >
+                      <path
+                          fill-rule="evenodd"
+                          d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5"
+                      />
+                  </svg>
+              </button>
 
-      {/* Conteúdo */}
-      <div style={{ padding: '20px 16px', display: 'flex', flexDirection: 'column', gap: 16 }} className="fade-up">
-        {/* Nome + badge */}
-        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 10 }}>
-          <h1 style={{ fontSize: 22, fontWeight: 800, lineHeight: 1.25 }}>{local.nome}</h1>
-          {desbloqueado && (
-            <span style={{
-              flexShrink: 0, background: '#dcfce7', color: '#16a34a',
-              borderRadius: 99, padding: '4px 12px', fontSize: 12, fontWeight: 600,
-            }}>
-              ✓ Desbloqueado
-            </span>
+              {desbloqueado && (
+                  <span className="local-badge">✓ Desbloqueado</span>
+              )}
+          </div>
+
+          {/* Conteúdo */}
+          <div className="local-corpo fade-up">
+              {/* Nome + badge */}
+              <div className="local-header">
+                  <h1 className="local-nome">{local.nome}</h1>
+              </div>
+
+              {/* Descrição */}
+              {local.descricao && (
+                  
+                      <p className="local-descricao">{local.descricao}</p>
+                 
+              )}
+
+              {/* Conteúdo rico — só após desbloqueio */}
+              {desbloqueado && local.conteudo && (
+                  <div className="local-conteudo">
+                      <div
+                          dangerouslySetInnerHTML={{ __html: local.conteudo }}
+                      />
+                  </div>
+              )}
+
+              {/* Coordenadas */}
+              <p className="local-coords">
+                  📍 {Number(local.latitude).toFixed(6)},{" "}
+                  {Number(local.longitude).toFixed(6)}
+              </p>
+          </div>
+
+          {modalBloqueado && (
+              <Modal
+                  icone="🔒"
+                  titulo="Local bloqueado"
+                  botoes={[
+                      {
+                          label: "Entendi!",
+                          onClick: () => {
+                              setModalBloqueado(false);
+                              navigate("/mapa");
+                          },
+                      },
+                  ]}
+              >
+                  <p className="modal-local__texto">
+                      Aproxime-se para fazer o check-in e desbloquear o conteúdo
+                      deste local.
+                  </p>
+              </Modal>
           )}
-        </div>
-
-        {/* Descrição */}
-        {local.descricao && (
-          <div className="card" style={{ padding: 16 }}>
-            <p style={{ color: 'var(--texto-suave)', fontSize: 15, lineHeight: 1.6, fontFamily: 'Work Sans, sans-serif' }}>
-              {local.descricao}
-            </p>
-          </div>
-        )}
-
-        {/* Conteúdo rico — só após desbloqueio */}
-        {desbloqueado && local.conteudo && (
-          <div className="card local-conteudo" style={{ padding: 16 }}>
-            <div dangerouslySetInnerHTML={{ __html: local.conteudo }} />
-          </div>
-        )}
-
-        {/* Coordenadas */}
-        <p style={{ fontSize: 13, color: 'var(--texto-suave)', paddingLeft: 4 }}>
-          📍 {Number(local.latitude).toFixed(6)}, {Number(local.longitude).toFixed(6)}
-        </p>
       </div>
-
-      {/* Modal Aviso Bloqueado */}
-      {modalBloqueado && (
-        <div className="modal-overlay">
-          <div className="modal-card">
-            <p style={{ fontSize: 28 }}>🔒</p>
-            <h3 style={{ fontSize: 17, fontWeight: 700 }}>Local bloqueado</h3>
-            <p style={{ fontSize: 14, color: 'var(--texto-suave)', lineHeight: 1.55 }}>
-              Aproxime-se para fazer o check-in e desbloquear o conteúdo deste local.
-            </p>
-            <button
-              className="btn btn-primario"
-              onClick={() => { setModalBloqueado(false); navigate('/mapa'); }}
-              style={{ marginTop: 4 }}
-            >
-              Entendi!
-            </button>
-          </div>
-        </div>
-      )}
-    </div>
   );
 }

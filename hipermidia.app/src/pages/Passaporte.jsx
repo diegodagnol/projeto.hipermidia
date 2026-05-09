@@ -4,6 +4,7 @@ import { api } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import NavInferior from '../components/NavInferior';
 import Contador from '../components/contador';
+import Modal from '../components/Modal';
 import './Passaporte.scss';
 
 const VITE_API_URL = import.meta.env.VITE_API_URL || '';
@@ -26,6 +27,7 @@ export default function Passaporte() {
   const [checkpoints, setCheckpoints] = useState(new Set());
   const [busca, setBusca] = useState('');
   const [carregando, setCarregando] = useState(true);
+  const [modalBloqueado, setModalBloqueado] = useState(null);
 
   useEffect(() => {
     Promise.all([
@@ -82,8 +84,8 @@ export default function Passaporte() {
               return (
                 <div
                   key={local.id}
-                  className="passaporte-card fade-up"
-                  onClick={() => navigate(`/local/${local.id}`)}
+                  className={`passaporte-card fade-up ${!visitado ? "passaporte-bloqueado" : ""}`}
+                  onClick={() => visitado ? navigate(`/local/${local.id}`) : setModalBloqueado(local)}
                 >
                   <div className="passaporte-card-imagem">
                     {imgUrl && <img src={imgUrl} alt={local.nome} />}
@@ -105,6 +107,19 @@ export default function Passaporte() {
           </div>
         )}
       </div>
+
+      {modalBloqueado && (
+        <Modal
+          icone="🔒"
+          titulo={modalBloqueado.nome}
+          onClose={() => setModalBloqueado(null)}
+          botoes={[{ label: 'Entendi!', onClick: () => setModalBloqueado(null) }]}
+        >
+          <p className="modal-local__texto">
+            Aproxime-se para fazer o check-in e desbloquear o conteúdo deste local.
+          </p>
+        </Modal>
+      )}
 
       <NavInferior ativo="passaporte" />
     </div>

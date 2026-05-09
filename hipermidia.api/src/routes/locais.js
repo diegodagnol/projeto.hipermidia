@@ -1,8 +1,36 @@
 const express = require('express');
+const multer  = require('multer');
+const path    = require('path');
+const fs      = require('fs');
 const { body, param, validationResult } = require('express-validator');
 const Local = require('../models/Local');
 const authenticateAdmin = require('../middlewares/authenticateAdmin');
 const sanitizeConteudo  = require('../middlewares/sanitizeHtml');
+
+const uploadsDir = path.join(__dirname, '../../uploads');
+fs.mkdirSync(uploadsDir, { recursive: true });
+
+const upload = multer({
+  storage: multer.diskStorage({
+    destination: uploadsDir,
+    filename: (_req, file, cb) => {
+      const ext  = path.extname(file.originalname).toLowerCase();
+      const name = `${Date.now()}-${Math.random().toString(36).slice(2)}${ext}`;
+      cb(null, name);
+    },
+  }),
+  limits: { fileSize: 5 * 1024 * 1024 },
+  fileFilter: (_req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) cb(null, true);
+    else cb(Object.assign(new Error('Apenas imagens são permitidas'), { status: 400 }));
+  },
+});
+
+function deletarFotoLocal(foto_url) {
+  if (!foto_url || !foto_url.startsWith('/uploads/')) return;
+  const filepath = path.join(uploadsDir, path.basename(foto_url));
+  fs.unlink(filepath, () => {});
+}
 
 const router = express.Router();
 
@@ -80,8 +108,34 @@ router.put('/:id', authenticateAdmin, sanitizeConteudo, [...validarId, ...valida
     const existe = await Local.findById(id);
     if (!existe) return res.status(404).json({ erro: 'Local não encontrado' });
 
+    if (existe.foto_url !== foto_url) deletarFotoLocal(existe.foto_url);
+
     const atualizado = await Local.update(id, { nome, descricao, conteudo, latitude, longitude, foto_url });
     res.json(atualizado);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// POST /locais/:id/upload
+router.post('/:id/upload', authenticateAdmin, validarId, validar, (req, res, next) => {
+  upload.single('foto')(req, res, (err) => {
+    if (err) return next(Object.assign(err, { status: err.status || 400 }));
+    next();
+  });
+}, async (req, res, next) => {
+  try {
+    if (!req.file) return res.status(400).json({ erro: 'Nenhum arquivo enviado' });
+
+    const id = Number(req.params.id);
+    const existe = await Local.findById(id);
+    if (!existe) return res.status(404).json({ erro: 'Local não encontrado' });
+
+    deletarFotoLocal(existe.foto_url);
+
+    const foto_url = `/uploads/${req.file.filename}`;
+    await Local.updateFoto(id, foto_url);
+    res.json({ foto_url });
   } catch (err) {
     next(err);
   }
@@ -90,8 +144,12 @@ router.put('/:id', authenticateAdmin, sanitizeConteudo, [...validarId, ...valida
 // DELETE /locais/:id
 router.delete('/:id', authenticateAdmin, validarId, validar, async (req, res, next) => {
   try {
-    const deletado = await Local.remove(Number(req.params.id));
-    if (!deletado) return res.status(404).json({ erro: 'Local não encontrado' });
+    const id = Number(req.params.id);
+    const existe = await Local.findById(id);
+    if (!existe) return res.status(404).json({ erro: 'Local não encontrado' });
+
+    await Local.remove(id);
+    deletarFotoLocal(existe.foto_url);
     res.status(204).send();
   } catch (err) {
     next(err);

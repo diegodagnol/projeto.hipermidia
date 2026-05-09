@@ -1,14 +1,15 @@
 @use '../styles/variables' as *;
 
 .local-conteudo {
-  line-height: 1.7;
-  font-size: 15px;
-  color: $texto;
+  line-height: 1.5;
+  font-size: 16px;
+  color: $texto-suave;
   font-family: $font-content;
 
   h1, h2, h3 {
     margin: 16px 0 8px;
     font-weight: 700;
+    color: $texto;
   }
 
   p          { margin-bottom: 10px; }
@@ -43,4 +44,97 @@
   border-top-color: $azul;
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
+}
+
+.local-loading {
+  height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.local-pagina {
+  min-height: 100dvh;
+  //background: var(--cinza-bg);
+  padding-bottom: 32px;
+}
+
+.local-capa {
+  position: relative;
+  width: 100%;
+  height: 240px;
+  background: #e8e8e8;
+
+  &__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.local-voltar {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  padding: 5px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+}
+
+.local-corpo {
+  padding: 32px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background-color: #fff;
+  border-radius: 32px 32px 0 0;
+      top: -32px;
+    position: relative;
+}
+
+.local-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.local-nome {
+  font-size: clamp(30px, 2vw, 4rem);
+  font-weight: 800;
+  line-height: 1.25;
+
+}
+
+.local-badge {
+  flex-shrink: 0;
+  background: #dcfce7;
+  color: #16a34a;
+  border-radius: 99px;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  position: absolute;
+  top: 24px;
+  right: 16px;
+}
+
+.local-card {
+  padding: 16px;
+}
+
+.local-descricao {
+  color: var(--texto-suave);
+  font-size: 15px;
+  // line-height: 1.6;
+  font-family: $font-content;
+  margin-bottom: 2rem;
+}
+
+.local-coords {
+  font-size: 13px;
+  color: var(--texto-suave);
+  padding-left: 4px;
 }
