@@ -51,6 +51,7 @@
 
   &::placeholder { color: $texto-suave; }
   &:focus        { border-color: $azul; }
+  &:disabled     { background: $cinza-bg; color: $texto-suave; cursor: not-allowed; }
 }
 
 // ─── Texto truncado em N linhas ───────────────────────────────────────────────

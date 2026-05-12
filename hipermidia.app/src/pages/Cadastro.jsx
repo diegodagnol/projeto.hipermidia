@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { api } from '../services/api';
 import { useAuth } from '../context/AuthContext';
+import SenhaRequisitos, { senhaValida } from '../components/SenhaRequisitos';
 
 export default function Cadastro() {
   const { login } = useAuth();
@@ -17,6 +18,10 @@ export default function Cadastro() {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    if (!senhaValida(form.senha)) {
+      setErros({ senha: 'A senha não atende todos os requisitos' });
+      return;
+    }
     setErros({});
     setCarregando(true);
     try {
@@ -76,6 +81,7 @@ export default function Cadastro() {
             <input name="senha" type="password" autoComplete="new-password" required value={form.senha} onChange={handleChange} placeholder="Senha" />
             {erros.senha && <span className="erro-campo">{erros.senha}</span>}
           </div>
+          <SenhaRequisitos valor={form.senha} />
 
           {erros.geral && <p className="erro-campo" style={{ fontSize: 14 }}>{erros.geral}</p>}
 

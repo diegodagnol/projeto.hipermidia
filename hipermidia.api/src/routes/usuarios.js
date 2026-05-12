@@ -2,8 +2,30 @@ const express = require('express');
 const { body, param, validationResult } = require('express-validator');
 const Usuario = require('../models/Usuario');
 const authenticateAdmin = require('../middlewares/authenticateAdmin');
+const authenticateUser = require('../middlewares/authenticateUser');
+const jwt = require('jsonwebtoken');
 
 const router = express.Router();
+
+// Permite acesso se for admin OU se for o próprio usuário (payload.usuario distingue os dois)
+function authenticateAdminOrSelf(req, res, next) {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
+  if (!token) return res.status(401).json({ erro: 'Token de autenticação ausente' });
+
+  try {
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    const isAdmin = typeof payload.usuario === 'undefined';
+    if (isAdmin) {
+      req.admin = payload;
+    } else {
+      req.usuario = payload;
+    }
+    next();
+  } catch {
+    return res.status(401).json({ erro: 'Token inválido ou expirado' });
+  }
+}
 
 function validar(req, res, next) {
   const erros = validationResult(req);
@@ -113,9 +135,14 @@ router.post('/', validacoesCriar, validar, async (req, res, next) => {
 });
 
 // PUT /usuarios/:id
-router.put('/:id', authenticateAdmin, validacoesAtualizar, validar, async (req, res, next) => {
+router.put('/:id', authenticateAdminOrSelf, validacoesAtualizar, validar, async (req, res, next) => {
   try {
     const id = Number(req.params.id);
+
+    if (!req.admin && req.usuario.sub !== id) {
+      return res.status(403).json({ erro: 'Sem permissão para alterar este usuário' });
+    }
+
     const { nome, email, usuario } = req.body;
 
     const existe = await Usuario.findById(id);
@@ -141,6 +168,7 @@ router.put('/:id', authenticateAdmin, validacoesAtualizar, validar, async (req, 
 // PATCH /usuarios/:id/senha
 router.patch(
   '/:id/senha',
+  authenticateAdminOrSelf,
   [
     param('id').isInt({ min: 1 }).withMessage('ID inválido'),
     body('senha_atual').notEmpty().withMessage('Senha atual é obrigatória'),
@@ -152,6 +180,11 @@ router.patch(
   async (req, res, next) => {
     try {
       const id = Number(req.params.id);
+
+      if (!req.admin && req.usuario.sub !== id) {
+        return res.status(403).json({ erro: 'Sem permissão para alterar este usuário' });
+      }
+
       const { senha_atual, nova_senha } = req.body;
 
       const usuario = await Usuario.findByEmail(

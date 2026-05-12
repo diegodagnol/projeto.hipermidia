@@ -31,7 +31,7 @@ async function findByEmail(email) {
   const result = await pool
     .request()
     .input('email', sql.NVarChar(255), email)
-    .query('SELECT * FROM Usuario WHERE email = @email');
+    .query('SELECT id, nome, email, usuario, senha, created_at, updated_at FROM Usuario WHERE email = @email');
   return result.recordset[0] || null;
 }
 
@@ -40,7 +40,7 @@ async function findByUsuario(usuario) {
   const result = await pool
     .request()
     .input('usuario', sql.NVarChar(100), usuario)
-    .query('SELECT * FROM Usuario WHERE usuario = @usuario');
+    .query('SELECT id, nome, email, usuario, senha, created_at, updated_at FROM Usuario WHERE usuario = @usuario');
   return result.recordset[0] || null;
 }
 

@@ -1,7 +1,7 @@
 @use '../styles/variables' as *;
 
 .local-conteudo {
-  line-height: 1.5;
+  line-height: 1.7;
   font-size: 16px;
   color: $texto-suave;
   font-family: $font-content;
@@ -62,13 +62,18 @@
 .local-capa {
   position: relative;
   width: 100%;
-  height: 240px;
+  height: 350px;
   background: #e8e8e8;
+  overflow: hidden;
 
   &__img {
+    position: absolute;
+    top: -15%;
+    left: 0;
     width: 100%;
-    height: 100%;
+    height: 130%;
     object-fit: cover;
+    will-change: transform;
   }
 }
 

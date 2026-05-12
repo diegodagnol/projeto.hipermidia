@@ -19,7 +19,7 @@ const ChevronDir = () => (
 );
 
 const ITENS_MENU = [
-    { label: "Meus dados", rota: null },
+    { label: "Meus dados", rota: "/perfil/meus-dados" },
     { label: "Configurações", rota: null },
     { label: "Sobre o projeto", rota: null },
     { label: "Ajuda", rota: null },

@@ -9,6 +9,7 @@ import Mapa from './pages/Mapa';
 import Passaporte from './pages/Passaporte';
 import Local from './pages/Local';
 import Perfil from './pages/Perfil';
+import MeusDados from './pages/MeusDados';
 import Ranking from './pages/Ranking';
 
 // Layout único para rotas protegidas — ProgressoProvider persiste entre navegações
@@ -35,6 +36,7 @@ export default function App() {
             <Route path="/passaporte" element={<Passaporte />} />
             <Route path="/local/:id" element={<Local />} />
             <Route path="/perfil" element={<Perfil />} />
+            <Route path="/perfil/meus-dados" element={<MeusDados />} />
             <Route path="/ranking" element={<Ranking />} />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />

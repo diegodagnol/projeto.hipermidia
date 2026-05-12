@@ -1,9 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { api } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import './Local.scss';
 import Modal from '../components/Modal';
+
+const VITE_API_URL = import.meta.env.VITE_API_URL || '';
 
 export default function Local() {
   const { id } = useParams();
@@ -13,6 +15,17 @@ export default function Local() {
   const [desbloqueado, setDesbloqueado] = useState(false);
   const [carregando, setCarregando] = useState(true);
   const [modalBloqueado, setModalBloqueado] = useState(false);
+  const capaRef = useRef(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (capaRef.current) {
+        capaRef.current.style.transform = `translateY(${window.scrollY * 0.4}px)`;
+      }
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   useEffect(() => {
     async function carregar() {
@@ -49,9 +62,11 @@ export default function Local() {
       <div className="local-pagina">
           {/* Foto de capa com back button sobreposto */}
           <div className="local-capa">
+           
               {local.foto_url && (
                   <img
-                      src={local.foto_url}
+                      ref={capaRef}
+                      src={local.foto_url ? (local.foto_url.startsWith('http') ? local.foto_url : `${VITE_API_URL}${local.foto_url}`) : null}
                       alt={local.nome}
                       className="local-capa__img"
                   />

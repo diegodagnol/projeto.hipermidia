@@ -3,6 +3,7 @@ import { useNavigate, Navigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../context/AuthContext";
 import { api } from "../services/api";
+import SenhaRequisitos, { senhaValida } from "../components/SenhaRequisitos";
 import './Abertura.scss';
 
 // ─── SVG do logo (reutilizado nos dois estados) ───────────────────────────────
@@ -98,6 +99,10 @@ function FormCadastro({ onLogin }) {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    if (!senhaValida(form.senha)) {
+      setErros({ senha: 'A senha não atende todos os requisitos' });
+      return;
+    }
     setErros({}); setCarregando(true);
     try {
       await api.post('/usuarios', form);
@@ -143,6 +148,7 @@ function FormCadastro({ onLogin }) {
         <input name="senha" type="password" required value={form.senha} onChange={set('senha')} placeholder="Senha" autoComplete="new-password" />
         {erros.senha && <span className="erro-campo">{erros.senha}</span>}
       </div>
+      <SenhaRequisitos valor={form.senha} />
       {erros.geral && <p className="erro-campo">{erros.geral}</p>}
       <button type="submit" className="btn btn-primario" disabled={carregando}>
         {carregando ? 'Criando conta...' : 'Criar conta'}
