@@ -4,6 +4,7 @@
     display: flex;
     align-items: center;
     z-index: 999;
+    cursor: pointer;
 
     &__display {
         background-color: $azul;

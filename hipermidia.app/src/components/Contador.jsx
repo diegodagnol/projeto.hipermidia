@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import { useProgresso } from '../context/ProgressoContext';
 import './Contador.scss';
 
@@ -17,11 +18,13 @@ const LogoSVG = ({ width = 77, height = 58 }) => (
 );
 
 export default function Contador({ page }) {
+  const navigate = useNavigate();
   const { total, visitados } = useProgresso();
   const label = total === null ? '…' : `${visitados}/${total}`;
 
   return (
-    <div className={`contador-locais ${page === 'mapa' ? 'contador-page-mapa' : 'contador-page-padrao'}`}>
+    <div onClick={() => navigate('/passaporte')} aria-label="Passaporte" 
+      className={`contador-locais ${page === 'mapa' ? 'contador-page-mapa' : 'contador-page-padrao'}`}>  
       <LogoSVG width={40} height={53} />
       <div className="contador-locais__display">
         {label}

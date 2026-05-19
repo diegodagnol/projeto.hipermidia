@@ -43,12 +43,18 @@ export default function Passaporte() {
 
   const locaisFiltrados = useMemo(() => {
     const termo = busca.trim().toLowerCase();
-    if (!termo) return locais;
-    return locais.filter(l =>
-      l.nome.toLowerCase().includes(termo) ||
-      (l.descricao && l.descricao.toLowerCase().includes(termo))
-    );
-  }, [locais, busca]);
+    const filtrados = termo
+      ? locais.filter(l =>
+          l.nome.toLowerCase().includes(termo) ||
+          (l.descricao && l.descricao.toLowerCase().includes(termo))
+        )
+      : locais;
+    return [...filtrados].sort((a, b) => {
+      const aVisitado = checkpoints.has(a.id) ? 0 : 1;
+      const bVisitado = checkpoints.has(b.id) ? 0 : 1;
+      return aVisitado - bVisitado;
+    });
+  }, [locais, busca, checkpoints]);
 
   return (
     <div className="pagina">

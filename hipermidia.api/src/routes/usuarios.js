@@ -64,23 +64,47 @@ const validacoesAtualizar = [
     .withMessage('Usuário pode conter apenas letras, números, _, . e -'),
 ];
 
-// GET /usuarios/ranking — classificação pública por checkpoints
+// 'combinado' = score por taxa (checkpoints / segundos desde cadastro)
+// 'checkpoints' = apenas contagem, desempate por tempo até último check-in
+const MODO_RANKING = 'combinado';
+
+const QUERY_RANKING = {
+  combinado: `
+    SELECT
+      u.id, u.nome, u.usuario,
+      COUNT(c.checkpoint_id) AS total_checkpoints,
+      DATEDIFF(second, u.created_at, MAX(c.created_at)) AS segundos_para_completar,
+      CASE
+        WHEN COUNT(c.checkpoint_id) = 0 THEN 0.0
+        WHEN DATEDIFF(second, u.created_at, MAX(c.created_at)) <= 0 THEN 9999.0
+        ELSE COUNT(c.checkpoint_id) * 1.0 / DATEDIFF(second, u.created_at, MAX(c.created_at))
+      END AS score
+    FROM Usuario u
+    LEFT JOIN UsuarioCheckpoint c ON c.usuario_id = u.id
+    GROUP BY u.id, u.nome, u.usuario, u.created_at
+    ORDER BY score DESC
+  `,
+  checkpoints: `
+    SELECT
+      u.id, u.nome, u.usuario,
+      COUNT(c.checkpoint_id) AS total_checkpoints,
+      DATEDIFF(second, u.created_at, MAX(c.created_at)) AS segundos_para_completar,
+      NULL AS score
+    FROM Usuario u
+    LEFT JOIN UsuarioCheckpoint c ON c.usuario_id = u.id
+    GROUP BY u.id, u.nome, u.usuario, u.created_at
+    ORDER BY
+      total_checkpoints DESC,
+      ISNULL(DATEDIFF(minute, u.created_at, MAX(c.created_at)), 2147483647) ASC
+  `,
+};
+
+// GET /usuarios/ranking
 router.get('/ranking', async (req, res, next) => {
   try {
-    const { sql, getPool } = require('../config/database');
+    const { getPool } = require('../config/database');
     const pool = await getPool();
-    const result = await pool.request().query(`
-      SELECT
-        u.id,
-        u.nome,
-        u.usuario,
-        COUNT(c.checkpoint_id) AS total_checkpoints,
-        MIN(c.created_at)      AS primeiro_checkpoint
-      FROM Usuario u
-      LEFT JOIN UsuarioCheckpoint c ON c.usuario_id = u.id
-      GROUP BY u.id, u.nome, u.usuario
-      ORDER BY total_checkpoints DESC, primeiro_checkpoint ASC
-    `);
+    const result = await pool.request().query(QUERY_RANKING[MODO_RANKING]);
     res.json(result.recordset);
   } catch (err) {
     next(err);

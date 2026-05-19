@@ -1,0 +1,248 @@
+
+<style>
+  .wrap { display:flex; justify-content:center; align-items:center; padding:40px 0 24px; gap:56px; flex-wrap:wrap; }
+  .card { display:flex; flex-direction:column; align-items:center; gap:12px; }
+  .lbl  { font-size:12px; color:var(--color-text-secondary); letter-spacing:.05em; }
+  @keyframes float    { 0%,100%{transform:translateY(0)}   50%{transform:translateY(-7px)} }
+  @keyframes glow-p   { 0%,100%{filter:drop-shadow(0 0 8px rgba(255,200,50,.55)) drop-shadow(0 6px 14px rgba(0,0,0,.5))} 50%{filter:drop-shadow(0 0 22px rgba(255,215,80,.95)) drop-shadow(0 6px 18px rgba(0,0,0,.5))} }
+  .ico { animation:float 3.2s ease-in-out infinite, glow-p 2.8s ease-in-out infinite; cursor:pointer; transition:filter .2s,transform .2s; }
+  .ico:hover { animation-play-state:paused; transform:scale(1.09) translateY(-4px); filter:drop-shadow(0 0 30px rgba(255,215,80,1)) drop-shadow(0 8px 22px rgba(0,0,0,.65)) !important; }
+</style>
+
+<div class="wrap">
+
+  <!-- GRANDE -->
+  <div class="card">
+  <svg class="ico" width="148" height="238" viewBox="0 0 148 238" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="sg" cx="42%" cy="32%" r="62%">
+        <stop offset="0%"   stop-color="#FFF3A8"/>
+        <stop offset="22%"  stop-color="#F7CC36"/>
+        <stop offset="58%"  stop-color="#C98A08"/>
+        <stop offset="100%" stop-color="#7A4F00"/>
+      </radialGradient>
+      <radialGradient id="sh" cx="35%" cy="25%" r="36%">
+        <stop offset="0%"   stop-color="#fff" stop-opacity=".92"/>
+        <stop offset="100%" stop-color="#fff" stop-opacity="0"/>
+      </radialGradient>
+      <linearGradient id="se" x1="0" y1="0" x2=".35" y2="1">
+        <stop offset="0%"   stop-color="#6B4400"/>
+        <stop offset="100%" stop-color="#2C1800"/>
+      </linearGradient>
+      <linearGradient id="pg" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%"   stop-color="#7A5200"/>
+        <stop offset="20%"  stop-color="#CC9010"/>
+        <stop offset="48%"  stop-color="#FFE458"/>
+        <stop offset="76%"  stop-color="#C08808"/>
+        <stop offset="100%" stop-color="#7A5200"/>
+      </linearGradient>
+      <linearGradient id="pt" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%"   stop-color="#9E6E00"/>
+        <stop offset="50%"  stop-color="#FFE870"/>
+        <stop offset="100%" stop-color="#9E6E00"/>
+      </linearGradient>
+      <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%"   stop-color="#FFD84A"/>
+        <stop offset="35%"  stop-color="#C98A08"/>
+        <stop offset="100%" stop-color="#582F00"/>
+      </linearGradient>
+      <linearGradient id="bs" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%"   stop-color="#BE8600"/>
+        <stop offset="100%" stop-color="#2F1600"/>
+      </linearGradient>
+      <radialGradient id="gg" cx="50%" cy="50%" r="50%">
+        <stop offset="0%"   stop-color="#FFD040" stop-opacity=".52"/>
+        <stop offset="100%" stop-color="#FFD040" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+
+    <!-- glow chão -->
+    <ellipse cx="74" cy="230" rx="50" ry="9" fill="url(#gg)"/>
+
+    <!-- BASE 3 degraus -->
+    <path d="M15 218 L19 227 L129 227 L133 218Z" fill="url(#bs)" opacity=".9"/>
+    <rect  x="15" y="211" width="118" height="8" rx="2" fill="url(#bg)"/>
+    <path d="M15 211 L19 206 L129 206 L133 211Z" fill="url(#pt)"/>
+
+    <path d="M26 206 L30 213 L118 213 L122 206Z" fill="url(#bs)" opacity=".85"/>
+    <rect  x="26" y="199" width="96"  height="8" rx="2" fill="url(#bg)"/>
+    <path d="M26 199 L30 194 L118 194 L122 199Z" fill="url(#pt)"/>
+
+    <path d="M37 194 L41 201 L107 201 L111 194Z" fill="url(#bs)" opacity=".8"/>
+    <rect  x="37" y="187" width="74"  height="8" rx="2" fill="url(#bg)"/>
+    <path d="M37 187 L41 182 L107 182 L111 187Z" fill="url(#pt)"/>
+
+    <!-- PILAR trapezoidal (alarga embaixo) -->
+    <path d="M81 182 L87 182 L81 90 L77 88Z" fill="#5A3600" opacity=".75"/>
+    <path d="M67 182 L61 182 L67 90 L71 88Z" fill="#9A6C00" opacity=".45"/>
+    <path d="M61 182 L87 182 L81 90 L67 90Z" fill="url(#pg)"/>
+    <ellipse cx="74" cy="90"  rx="16" ry="5" fill="url(#pt)"/>
+    <ellipse cx="74" cy="182" rx="14" ry="4" fill="url(#pt)" opacity=".7"/>
+
+    <!-- ESTRELA 6 PONTAS
+         Forma do original:
+         - ponta topo (fina, alongada, levemente triangular)
+         - ponta base (fina, alongada — conecta ao pilar)
+         - 2 pontas laterais esq/dir (médias, levemente arredondadas)
+         - 2 pontas diagonais sup esq/dir (finas)
+         Concavidades bem marcadas entre as pontas.
+         Centro em (74, 50), raio externo ~44, raio interno ~18
+    -->
+
+    <!-- Os 6 vértices externos da estrela, distribuídos a cada 60°
+         com ponta 0 apontando para cima (−90°):
+         P0 top:     74, 6
+         P1 dir-sup: 74+44*cos(30°)=74+38=112,  50−44*sin(30°)=50−22=28
+         P2 dir-inf: 74+44*cos(−30°)=112,        50+22=72
+         P3 bot:     74, 94
+         P4 esq-inf: 74−38=36,  72
+         P5 esq-sup: 36,        28
+
+         Vértices internos (raio 16, offset 30°):
+         I0: 74+16*cos(0°)=90,  50
+         I1: 74+16*cos(−60°)=82, 50+14=64   → entre P1 e P2
+         I2: 74+16*cos(−120°)=66, 64         → entre P2 e P3
+         I3: 74−16=58, 50                     → entre P3 e P4
+         I4: 66, 36                           → entre P4 e P5
+         I5: 82, 36                           → entre P5 e P0
+
+         Ajuste: raio interno = 14 para concavidade mais marcada
+    -->
+
+    <!-- sombra extrusion -->
+    <g transform="translate(5,6)" opacity=".5">
+      <polygon points="
+        74,6   82,36  112,28  90,50
+        112,72  82,64  74,94
+        66,64   36,72  58,50
+        36,28   66,36
+      " fill="url(#se)"/>
+    </g>
+    <!-- extrusion mid -->
+    <g transform="translate(2.5,3)" opacity=".28">
+      <polygon points="
+        74,6   82,36  112,28  90,50
+        112,72  82,64  74,94
+        66,64   36,72  58,50
+        36,28   66,36
+      " fill="#4A2C00"/>
+    </g>
+
+    <!-- face principal -->
+    <polygon id="star"
+      points="
+        74,6   82,36  112,28  90,50
+        112,72  82,64  74,94
+        66,64   36,72  58,50
+        36,28   66,36
+      "
+      fill="url(#sg)"/>
+
+    <!-- specular -->
+    <polygon
+      points="
+        74,6   82,36  112,28  90,50
+        112,72  82,64  74,94
+        66,64   36,72  58,50
+        36,28   66,36
+      "
+      fill="url(#sh)"/>
+
+    <!-- rim -->
+    <polygon
+      points="
+        74,6   82,36  112,28  90,50
+        112,72  82,64  74,94
+        66,64   36,72  58,50
+        36,28   66,36
+      "
+      fill="none" stroke="#FFE87A" stroke-width="1" opacity=".55"/>
+
+    <!-- brilho -->
+    <circle cx="66" cy="28" r="5"   fill="#fff" opacity=".28"/>
+    <circle cx="70" cy="23" r="2.5" fill="#fff" opacity=".55"/>
+  </svg>
+  <span class="lbl">Troféu 3D</span>
+  </div>
+
+  <!-- MÉDIO -->
+  <div class="card">
+  <svg class="ico" width="94" height="152" viewBox="0 0 148 238" xmlns="http://www.w3.org/2000/svg" style="animation-delay:.5s">
+    <defs>
+      <radialGradient id="sg2" cx="42%" cy="32%" r="62%"><stop offset="0%" stop-color="#FFF3A8"/><stop offset="22%" stop-color="#F7CC36"/><stop offset="58%" stop-color="#C98A08"/><stop offset="100%" stop-color="#7A4F00"/></radialGradient>
+      <radialGradient id="sh2" cx="35%" cy="25%" r="36%"><stop offset="0%" stop-color="#fff" stop-opacity=".92"/><stop offset="100%" stop-color="#fff" stop-opacity="0"/></radialGradient>
+      <linearGradient id="se2" x1="0" y1="0" x2=".35" y2="1"><stop offset="0%" stop-color="#6B4400"/><stop offset="100%" stop-color="#2C1800"/></linearGradient>
+      <linearGradient id="pg2" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#7A5200"/><stop offset="20%" stop-color="#CC9010"/><stop offset="48%" stop-color="#FFE458"/><stop offset="76%" stop-color="#C08808"/><stop offset="100%" stop-color="#7A5200"/></linearGradient>
+      <linearGradient id="pt2" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#9E6E00"/><stop offset="50%" stop-color="#FFE870"/><stop offset="100%" stop-color="#9E6E00"/></linearGradient>
+      <linearGradient id="bg2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#FFD84A"/><stop offset="35%" stop-color="#C98A08"/><stop offset="100%" stop-color="#582F00"/></linearGradient>
+      <linearGradient id="bs2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#BE8600"/><stop offset="100%" stop-color="#2F1600"/></linearGradient>
+      <radialGradient id="gg2" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#FFD040" stop-opacity=".52"/><stop offset="100%" stop-color="#FFD040" stop-opacity="0"/></radialGradient>
+    </defs>
+    <ellipse cx="74" cy="230" rx="50" ry="9" fill="url(#gg2)"/>
+    <path d="M15 218 L19 227 L129 227 L133 218Z" fill="url(#bs2)" opacity=".9"/>
+    <rect x="15" y="211" width="118" height="8" rx="2" fill="url(#bg2)"/>
+    <path d="M15 211 L19 206 L129 206 L133 211Z" fill="url(#pt2)"/>
+    <path d="M26 206 L30 213 L118 213 L122 206Z" fill="url(#bs2)" opacity=".85"/>
+    <rect x="26" y="199" width="96" height="8" rx="2" fill="url(#bg2)"/>
+    <path d="M26 199 L30 194 L118 194 L122 199Z" fill="url(#pt2)"/>
+    <path d="M37 194 L41 201 L107 201 L111 194Z" fill="url(#bs2)" opacity=".8"/>
+    <rect x="37" y="187" width="74" height="8" rx="2" fill="url(#bg2)"/>
+    <path d="M37 187 L41 182 L107 182 L111 187Z" fill="url(#pt2)"/>
+    <path d="M81 182 L87 182 L81 90 L77 88Z" fill="#5A3600" opacity=".75"/>
+    <path d="M67 182 L61 182 L67 90 L71 88Z" fill="#9A6C00" opacity=".45"/>
+    <path d="M61 182 L87 182 L81 90 L67 90Z" fill="url(#pg2)"/>
+    <ellipse cx="74" cy="90" rx="16" ry="5" fill="url(#pt2)"/>
+    <ellipse cx="74" cy="182" rx="14" ry="4" fill="url(#pt2)" opacity=".7"/>
+    <g transform="translate(5,6)" opacity=".5"><polygon points="74,6 82,36 112,28 90,50 112,72 82,64 74,94 66,64 36,72 58,50 36,28 66,36" fill="url(#se2)"/></g>
+    <g transform="translate(2.5,3)" opacity=".28"><polygon points="74,6 82,36 112,28 90,50 112,72 82,64 74,94 66,64 36,72 58,50 36,28 66,36" fill="#4A2C00"/></g>
+    <polygon points="74,6 82,36 112,28 90,50 112,72 82,64 74,94 66,64 36,72 58,50 36,28 66,36" fill="url(#sg2)"/>
+    <polygon points="74,6 82,36 112,28 90,50 112,72 82,64 74,94 66,64 36,72 58,50 36,28 66,36" fill="url(#sh2)"/>
+    <polygon points="74,6 82,36 112,28 90,50 112,72 82,64 74,94 66,64 36,72 58,50 36,28 66,36" fill="none" stroke="#FFE87A" stroke-width="1" opacity=".55"/>
+    <circle cx="66" cy="28" r="5" fill="#fff" opacity=".28"/>
+    <circle cx="70" cy="23" r="2.5" fill="#fff" opacity=".55"/>
+  </svg>
+  <span class="lbl">Tamanho UI</span>
+  </div>
+
+  <!-- DARK PREVIEW -->
+  <div class="card">
+  <div style="background:#131624;border-radius:16px;padding:22px 26px;display:flex;align-items:center;justify-content:center">
+  <svg class="ico" width="80" height="128" viewBox="0 0 148 238" xmlns="http://www.w3.org/2000/svg" style="animation-delay:1s">
+    <defs>
+      <radialGradient id="sg3" cx="42%" cy="32%" r="62%"><stop offset="0%" stop-color="#FFF3A8"/><stop offset="22%" stop-color="#F7CC36"/><stop offset="58%" stop-color="#C98A08"/><stop offset="100%" stop-color="#7A4F00"/></radialGradient>
+      <radialGradient id="sh3" cx="35%" cy="25%" r="36%"><stop offset="0%" stop-color="#fff" stop-opacity=".92"/><stop offset="100%" stop-color="#fff" stop-opacity="0"/></radialGradient>
+      <linearGradient id="se3" x1="0" y1="0" x2=".35" y2="1"><stop offset="0%" stop-color="#6B4400"/><stop offset="100%" stop-color="#2C1800"/></linearGradient>
+      <linearGradient id="pg3" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#7A5200"/><stop offset="20%" stop-color="#CC9010"/><stop offset="48%" stop-color="#FFE458"/><stop offset="76%" stop-color="#C08808"/><stop offset="100%" stop-color="#7A5200"/></linearGradient>
+      <linearGradient id="pt3" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#9E6E00"/><stop offset="50%" stop-color="#FFE870"/><stop offset="100%" stop-color="#9E6E00"/></linearGradient>
+      <linearGradient id="bg3" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#FFD84A"/><stop offset="35%" stop-color="#C98A08"/><stop offset="100%" stop-color="#582F00"/></linearGradient>
+      <linearGradient id="bs3" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#BE8600"/><stop offset="100%" stop-color="#2F1600"/></linearGradient>
+      <radialGradient id="gg3" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#FFD040" stop-opacity=".6"/><stop offset="100%" stop-color="#FFD040" stop-opacity="0"/></radialGradient>
+    </defs>
+    <ellipse cx="74" cy="230" rx="50" ry="9" fill="url(#gg3)"/>
+    <path d="M15 218 L19 227 L129 227 L133 218Z" fill="url(#bs3)" opacity=".9"/>
+    <rect x="15" y="211" width="118" height="8" rx="2" fill="url(#bg3)"/>
+    <path d="M15 211 L19 206 L129 206 L133 211Z" fill="url(#pt3)"/>
+    <path d="M26 206 L30 213 L118 213 L122 206Z" fill="url(#bs3)" opacity=".85"/>
+    <rect x="26" y="199" width="96" height="8" rx="2" fill="url(#bg3)"/>
+    <path d="M26 199 L30 194 L118 194 L122 199Z" fill="url(#pt3)"/>
+    <path d="M37 194 L41 201 L107 201 L111 194Z" fill="url(#bs3)" opacity=".8"/>
+    <rect x="37" y="187" width="74" height="8" rx="2" fill="url(#bg3)"/>
+    <path d="M37 187 L41 182 L107 182 L111 187Z" fill="url(#pt3)"/>
+    <path d="M81 182 L87 182 L81 90 L77 88Z" fill="#5A3600" opacity=".75"/>
+    <path d="M67 182 L61 182 L67 90 L71 88Z" fill="#9A6C00" opacity=".45"/>
+    <path d="M61 182 L87 182 L81 90 L67 90Z" fill="url(#pg3)"/>
+    <ellipse cx="74" cy="90" rx="16" ry="5" fill="url(#pt3)"/>
+    <ellipse cx="74" cy="182" rx="14" ry="4" fill="url(#pt3)" opacity=".7"/>
+    <g transform="translate(5,6)" opacity=".5"><polygon points="74,6 82,36 112,28 90,50 112,72 82,64 74,94 66,64 36,72 58,50 36,28 66,36" fill="url(#se3)"/></g>
+    <g transform="translate(2.5,3)" opacity=".28"><polygon points="74,6 82,36 112,28 90,50 112,72 82,64 74,94 66,64 36,72 58,50 36,28 66,36" fill="#4A2C00"/></g>
+    <polygon points="74,6 82,36 112,28 90,50 112,72 82,64 74,94 66,64 36,72 58,50 36,28 66,36" fill="url(#sg3)"/>
+    <polygon points="74,6 82,36 112,28 90,50 112,72 82,64 74,94 66,64 36,72 58,50 36,28 66,36" fill="url(#sh3)"/>
+    <polygon points="74,6 82,36 112,28 90,50 112,72 82,64 74,94 66,64 36,72 58,50 36,28 66,36" fill="none" stroke="#FFE87A" stroke-width="1" opacity=".55"/>
+    <circle cx="66" cy="28" r="5" fill="#fff" opacity=".28"/>
+    <circle cx="70" cy="23" r="2.5" fill="#fff" opacity=".55"/>
+  </svg>
+  </div>
+  <span class="lbl">Preview dark UI</span>
+  </div>
+
+</div>
