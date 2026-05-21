@@ -154,6 +154,49 @@ async function removeCheckpoint(usuarioId, checkpointId) {
   return result.recordset[0] || null;
 }
 
+// --- Recuperação de senha ---
+
+async function setCodigoRecuperacao(id, codigoHash) {
+  const pool = await getPool();
+  await pool
+    .request()
+    .input('id', sql.Int, id)
+    .input('hash', sql.NVarChar(255), codigoHash)
+    .query(`
+      UPDATE Usuario
+      SET recuperacao_codigo_hash = @hash,
+          recuperacao_expira_em   = DATEADD(MINUTE, 15, GETDATE())
+      WHERE id = @id
+    `);
+}
+
+async function getRecuperacaoAtiva(id) {
+  const pool = await getPool();
+  const result = await pool
+    .request()
+    .input('id', sql.Int, id)
+    .query(`
+      SELECT recuperacao_codigo_hash
+      FROM Usuario
+      WHERE id = @id
+        AND recuperacao_expira_em > GETDATE()
+    `);
+  return result.recordset[0] || null;
+}
+
+async function limparCodigoRecuperacao(id) {
+  const pool = await getPool();
+  await pool
+    .request()
+    .input('id', sql.Int, id)
+    .query(`
+      UPDATE Usuario
+      SET recuperacao_codigo_hash = NULL,
+          recuperacao_expira_em   = NULL
+      WHERE id = @id
+    `);
+}
+
 module.exports = {
   findAll,
   findById,
@@ -167,4 +210,7 @@ module.exports = {
   getCheckpoints,
   addCheckpoint,
   removeCheckpoint,
+  setCodigoRecuperacao,
+  getRecuperacaoAtiva,
+  limparCodigoRecuperacao,
 };

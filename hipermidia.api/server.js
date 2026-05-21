@@ -6,10 +6,11 @@ const helmet     = require('helmet');
 const rateLimit  = require('express-rate-limit');
 const path       = require('path');
 
-const authRouter     = require('./src/routes/auth');
-const usuariosRouter = require('./src/routes/usuarios');
-const locaisRouter   = require('./src/routes/locais');
-const errorHandler   = require('./src/middlewares/errorHandler');
+const authRouter          = require('./src/routes/auth');
+const usuariosRouter      = require('./src/routes/usuarios');
+const locaisRouter        = require('./src/routes/locais');
+const recuperacaoRouter   = require('./src/routes/recuperacaoSenha');
+const errorHandler        = require('./src/middlewares/errorHandler');
 
 const app = express();
 
@@ -36,13 +37,24 @@ const loginLimiter = rateLimit({
 });
 app.use('/auth/admin/login', loginLimiter);
 
+// Rate limiting na recuperação: máx 5 tentativas por IP a cada 15 minutos
+const recuperacaoLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { erro: 'Muitas tentativas. Tente novamente em 15 minutos.' },
+});
+app.use('/recuperacao-senha/solicitar', recuperacaoLimiter);
+
 app.get('/', (req, res) => {
   res.json({ message: 'API do Projeto Hipermídia' });
 });
 
-app.use('/auth',     authRouter);
-app.use('/usuarios', usuariosRouter);
-app.use('/locais',   locaisRouter);
+app.use('/auth',              authRouter);
+app.use('/usuarios',          usuariosRouter);
+app.use('/locais',            locaisRouter);
+app.use('/recuperacao-senha', recuperacaoRouter);
 
 app.use(errorHandler);
 

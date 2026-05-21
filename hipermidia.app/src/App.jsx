@@ -6,6 +6,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Abertura from './pages/Abertura';
 import Login from './pages/Login';
 import Cadastro from './pages/Cadastro';
+import RecuperarSenha from './pages/RecuperarSenha';
 import Mapa from './pages/Mapa';
 import Passaporte from './pages/Passaporte';
 import Local from './pages/Local';
@@ -35,6 +36,7 @@ export default function App() {
           <Route path="/" element={<Abertura />} />
           <Route path="/login" element={<Login />} />
           <Route path="/cadastro" element={<Cadastro />} />
+          <Route path="/recuperar-senha" element={<RecuperarSenha />} />
           <Route element={<LayoutProtegido />}>
             <Route path="/mapa" element={<Mapa />} />
             <Route path="/passaporte" element={<Passaporte />} />

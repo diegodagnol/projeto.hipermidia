@@ -1,0 +1,55 @@
+@use '../styles/variables' as *;
+
+.recuperar-senha {
+  &__voltar {
+    position: absolute;
+    top: 24px;
+    left: 24px;
+    background: none;
+    border: none;
+    color: var(--texto-suave);
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+
+    &:hover {
+      color: var(--texto);
+    }
+  }
+
+  &__passos {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 28px;
+
+    span {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--cinza-borda);
+      transition: background 0.2s;
+
+      &.ativo {
+        background: var(--azul);
+      }
+    }
+  }
+
+  &__reenviar {
+    background: none;
+    border: none;
+    color: var(--azul);
+    font-size: 14px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    padding: 0;
+
+    &:disabled {
+      color: var(--texto-suave);
+      cursor: default;
+    }
+  }
+}

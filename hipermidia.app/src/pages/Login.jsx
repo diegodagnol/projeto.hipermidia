@@ -76,6 +76,11 @@ export default function Login() {
           Não tem conta?{' '}
           <Link to="/cadastro" style={{ color: 'var(--azul)', fontWeight: 600 }}>Criar conta</Link>
         </p>
+        <p style={{ textAlign: 'center', marginTop: 8, fontSize: 14 }}>
+          <Link to="/recuperar-senha" style={{ color: 'var(--azul)', fontWeight: 600 }}>
+            Esqueci minha senha
+          </Link>
+        </p>
       </div>
     </div>
   );

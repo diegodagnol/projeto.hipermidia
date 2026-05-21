@@ -81,6 +81,9 @@ function FormLogin({ onCadastro }) {
         Não tem conta?{' '}
         <button type="button" onClick={onCadastro}>Criar conta</button>
       </p>
+      <p className="painel-form__link" style={{ marginTop: 2 }}>
+        <button type="button" onClick={() => navigate('/recuperar-senha')}>Esqueci minha senha</button>
+      </p>
     </form>
   );
 }
