@@ -1,105 +1,92 @@
 const bcrypt = require('bcryptjs');
-const { sql, getPool } = require('../config/database');
+const { getPool } = require('../config/database');
 
 const SALT_ROUNDS = 12;
 
 async function findAll() {
   const pool = await getPool();
-  const result = await pool.request().query(`
+  const result = await pool.query(`
     SELECT id, nome, email, usuario, created_at, updated_at
-    FROM Usuario
-    
+    FROM usuario
   `);
-  return result.recordset;
+  return result.rows;
 }
 
 async function findById(id) {
   const pool = await getPool();
-  const result = await pool
-    .request()
-    .input('id', sql.Int, id)
-    .query(`
-      SELECT id, nome, email, usuario, created_at, updated_at
-      FROM Usuario
-      WHERE id = @id
-    `);
-  return result.recordset[0] || null;
+  const result = await pool.query(
+    `SELECT id, nome, email, usuario, created_at, updated_at
+     FROM usuario
+     WHERE id = $1`,
+    [id]
+  );
+  return result.rows[0] || null;
 }
 
 async function findByEmail(email) {
   const pool = await getPool();
-  const result = await pool
-    .request()
-    .input('email', sql.NVarChar(255), email)
-    .query('SELECT id, nome, email, usuario, senha, created_at, updated_at FROM Usuario WHERE email = @email');
-  return result.recordset[0] || null;
+  const result = await pool.query(
+    `SELECT id, nome, email, usuario, senha, created_at, updated_at
+     FROM usuario
+     WHERE email = $1`,
+    [email]
+  );
+  return result.rows[0] || null;
 }
 
 async function findByUsuario(usuario) {
   const pool = await getPool();
-  const result = await pool
-    .request()
-    .input('usuario', sql.NVarChar(100), usuario)
-    .query('SELECT id, nome, email, usuario, senha, created_at, updated_at FROM Usuario WHERE usuario = @usuario');
-  return result.recordset[0] || null;
+  const result = await pool.query(
+    `SELECT id, nome, email, usuario, senha, created_at, updated_at
+     FROM usuario
+     WHERE usuario = $1`,
+    [usuario]
+  );
+  return result.rows[0] || null;
 }
 
 async function create({ nome, email, senha, usuario }) {
   const senhaHash = await bcrypt.hash(senha, SALT_ROUNDS);
-
   const pool = await getPool();
-  const result = await pool
-    .request()
-    .input('nome', sql.NVarChar(255), nome)
-    .input('email', sql.NVarChar(255), email.toLowerCase())
-    .input('senha', sql.NVarChar(255), senhaHash)
-    .input('usuario', sql.NVarChar(100), usuario)
-    .query(`
-      INSERT INTO Usuario (nome, email, senha, usuario)
-      OUTPUT INSERTED.id, INSERTED.nome, INSERTED.email, INSERTED.usuario, INSERTED.created_at
-      VALUES (@nome, @email, @senha, @usuario)
-    `);
-  return result.recordset[0];
+  const result = await pool.query(
+    `INSERT INTO usuario (nome, email, senha, usuario)
+     VALUES ($1, $2, $3, $4)
+     RETURNING id, nome, email, usuario, created_at`,
+    [nome, email.toLowerCase(), senhaHash, usuario]
+  );
+  return result.rows[0];
 }
 
 async function update(id, { nome, email, usuario }) {
   const pool = await getPool();
-  const result = await pool
-    .request()
-    .input('id', sql.Int, id)
-    .input('nome', sql.NVarChar(255), nome)
-    .input('email', sql.NVarChar(255), email.toLowerCase())
-    .input('usuario', sql.NVarChar(100), usuario)
-    .query(`
-      UPDATE Usuario
-      SET nome = @nome, email = @email, usuario = @usuario, updated_at = GETDATE()
-      OUTPUT INSERTED.id, INSERTED.nome, INSERTED.email, INSERTED.usuario, INSERTED.updated_at
-      WHERE id = @id
-    `);
-  return result.recordset[0] || null;
+  const result = await pool.query(
+    `UPDATE usuario
+     SET nome = $2, email = $3, usuario = $4, updated_at = NOW()
+     WHERE id = $1
+     RETURNING id, nome, email, usuario, updated_at`,
+    [id, nome, email.toLowerCase(), usuario]
+  );
+  return result.rows[0] || null;
 }
 
 async function updateSenha(id, novaSenha) {
   const senhaHash = await bcrypt.hash(novaSenha, SALT_ROUNDS);
   const pool = await getPool();
-  await pool
-    .request()
-    .input('id', sql.Int, id)
-    .input('senha', sql.NVarChar(255), senhaHash)
-    .query(`
-      UPDATE Usuario
-      SET senha = @senha, updated_at = GETDATE()
-      WHERE id = @id
-    `);
+  await pool.query(
+    `UPDATE usuario
+     SET senha = $2, updated_at = NOW()
+     WHERE id = $1`,
+    [id, senhaHash]
+  );
 }
 
 async function remove(id) {
   const pool = await getPool();
-  const result = await pool
-    .request()
-    .input('id', sql.Int, id)
-    .query('DELETE FROM Usuario OUTPUT DELETED.id WHERE id = @id');
-  return result.recordset[0] || null;
+  const result = await pool.query(
+    'DELETE FROM usuario WHERE id = $1 RETURNING id',
+    [id]
+  );
+  return result.rows[0] || null;
 }
 
 async function verificarSenha(senhaTexto, senhaHash) {
@@ -110,48 +97,37 @@ async function verificarSenha(senhaTexto, senhaHash) {
 
 async function getCheckpoints(usuarioId) {
   const pool = await getPool();
-  const result = await pool
-    .request()
-    .input('usuario_id', sql.Int, usuarioId)
-    .query(`
-      SELECT checkpoint_id, created_at
-      FROM UsuarioCheckpoint
-      WHERE usuario_id = @usuario_id
-      ORDER BY created_at
-    `);
-  return result.recordset;
+  const result = await pool.query(
+    `SELECT checkpoint_id, created_at
+     FROM usuariocheckpoint
+     WHERE usuario_id = $1
+     ORDER BY created_at`,
+    [usuarioId]
+  );
+  return result.rows;
 }
 
 async function addCheckpoint(usuarioId, checkpointId) {
   const pool = await getPool();
-  const result = await pool
-    .request()
-    .input('usuario_id', sql.Int, usuarioId)
-    .input('checkpoint_id', sql.Int, checkpointId)
-    .query(`
-      IF NOT EXISTS (
-        SELECT 1 FROM UsuarioCheckpoint
-        WHERE usuario_id = @usuario_id AND checkpoint_id = @checkpoint_id
-      )
-      INSERT INTO UsuarioCheckpoint (usuario_id, checkpoint_id)
-      OUTPUT INSERTED.usuario_id, INSERTED.checkpoint_id, INSERTED.created_at
-      VALUES (@usuario_id, @checkpoint_id)
-    `);
-  return result.recordset[0] || null;
+  const result = await pool.query(
+    `INSERT INTO usuariocheckpoint (usuario_id, checkpoint_id)
+     VALUES ($1, $2)
+     ON CONFLICT (usuario_id, checkpoint_id) DO NOTHING
+     RETURNING usuario_id, checkpoint_id, created_at`,
+    [usuarioId, checkpointId]
+  );
+  return result.rows[0] || null;
 }
 
 async function removeCheckpoint(usuarioId, checkpointId) {
   const pool = await getPool();
-  const result = await pool
-    .request()
-    .input('usuario_id', sql.Int, usuarioId)
-    .input('checkpoint_id', sql.Int, checkpointId)
-    .query(`
-      DELETE FROM UsuarioCheckpoint
-      OUTPUT DELETED.checkpoint_id
-      WHERE usuario_id = @usuario_id AND checkpoint_id = @checkpoint_id
-    `);
-  return result.recordset[0] || null;
+  const result = await pool.query(
+    `DELETE FROM usuariocheckpoint
+     WHERE usuario_id = $1 AND checkpoint_id = $2
+     RETURNING checkpoint_id`,
+    [usuarioId, checkpointId]
+  );
+  return result.rows[0] || null;
 }
 
 module.exports = {
