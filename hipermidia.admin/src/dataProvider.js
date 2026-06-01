@@ -1,5 +1,5 @@
 /**
- * Data provider customizado para a API do Projeto Hipermídia.
+ * Data provider customizado para a API do Explocus.
  *
  * Não usa paginação ainda (todos os registros retornados de uma vez),
  * compatível com o padrão atual da API.

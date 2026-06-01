@@ -37,7 +37,7 @@ const loginLimiter = rateLimit({
 app.use('/auth/admin/login', loginLimiter);
 
 app.get('/', (req, res) => {
-  res.json({ message: 'API do Projeto Hipermídia' });
+  res.json({ message: 'API Explocus' });
 });
 
 app.use('/auth',     authRouter);

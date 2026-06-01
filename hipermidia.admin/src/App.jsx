@@ -6,7 +6,7 @@ import { UsuarioList, UsuarioShow, UsuarioEdit } from './resources/usuarios';
 
 const App = () => (
   <Admin
-    title="Hipermídia Admin"
+    title="Explocus Admin"
     authProvider={authProvider}
     dataProvider={dataProvider}
   >

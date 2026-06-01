@@ -1,5 +1,5 @@
 {
-  "name": "hipermidia",
+  "name": "explocus",
   "private": true,
   "scripts": {
     "dev": "concurrently --names \"API,ADMIN,APP\" --prefix-colors \"cyan,magenta,green\" \"npm start --prefix hipermidia.api\" \"npm run dev --prefix hipermidia.admin\" \"npm run dev --prefix hipermidia.app\""
