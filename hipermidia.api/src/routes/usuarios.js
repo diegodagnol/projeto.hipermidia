@@ -73,14 +73,14 @@ const QUERY_RANKING = {
     SELECT
       u.id, u.nome, u.usuario,
       COUNT(c.checkpoint_id) AS total_checkpoints,
-      DATEDIFF(second, u.created_at, MAX(c.created_at)) AS segundos_para_completar,
+      EXTRACT(EPOCH FROM (MAX(c.created_at) - u.created_at))::bigint AS segundos_para_completar,
       CASE
         WHEN COUNT(c.checkpoint_id) = 0 THEN 0.0
-        WHEN DATEDIFF(second, u.created_at, MAX(c.created_at)) <= 0 THEN 9999.0
-        ELSE COUNT(c.checkpoint_id) * 1.0 / DATEDIFF(second, u.created_at, MAX(c.created_at))
+        WHEN EXTRACT(EPOCH FROM (MAX(c.created_at) - u.created_at)) <= 0 THEN 9999.0
+        ELSE COUNT(c.checkpoint_id) * 1.0 / EXTRACT(EPOCH FROM (MAX(c.created_at) - u.created_at))
       END AS score
-    FROM Usuario u
-    LEFT JOIN UsuarioCheckpoint c ON c.usuario_id = u.id
+    FROM usuario u
+    LEFT JOIN usuariocheckpoint c ON c.usuario_id = u.id
     GROUP BY u.id, u.nome, u.usuario, u.created_at
     ORDER BY score DESC
   `,
@@ -88,14 +88,14 @@ const QUERY_RANKING = {
     SELECT
       u.id, u.nome, u.usuario,
       COUNT(c.checkpoint_id) AS total_checkpoints,
-      DATEDIFF(second, u.created_at, MAX(c.created_at)) AS segundos_para_completar,
-      NULL AS score
-    FROM Usuario u
-    LEFT JOIN UsuarioCheckpoint c ON c.usuario_id = u.id
+      EXTRACT(EPOCH FROM (MAX(c.created_at) - u.created_at))::bigint AS segundos_para_completar,
+      NULL::float AS score
+    FROM usuario u
+    LEFT JOIN usuariocheckpoint c ON c.usuario_id = u.id
     GROUP BY u.id, u.nome, u.usuario, u.created_at
     ORDER BY
       total_checkpoints DESC,
-      ISNULL(DATEDIFF(minute, u.created_at, MAX(c.created_at)), 2147483647) ASC
+      COALESCE(EXTRACT(EPOCH FROM (MAX(c.created_at) - u.created_at)) / 60, 2147483647) ASC
   `,
 };
 
@@ -104,8 +104,8 @@ router.get('/ranking', async (req, res, next) => {
   try {
     const { getPool } = require('../config/database');
     const pool = await getPool();
-    const result = await pool.request().query(QUERY_RANKING[MODO_RANKING]);
-    res.json(result.recordset);
+    const result = await pool.query(QUERY_RANKING[MODO_RANKING]);
+    res.json(result.rows);
   } catch (err) {
     next(err);
   }

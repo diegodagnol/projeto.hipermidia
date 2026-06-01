@@ -1,8 +1,8 @@
 function errorHandler(err, req, res, next) {
   console.error(`[${new Date().toISOString()}] ${req.method} ${req.path} -`, err.message);
 
-  // Erros conhecidos do mssql
-  if (err.number === 2627 || err.number === 2601) {
+  // Violação de unique constraint no PostgreSQL (código 23505)
+  if (err.code === '23505') {
     return res.status(409).json({ erro: 'Registro duplicado' });
   }
 

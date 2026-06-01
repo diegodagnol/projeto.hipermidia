@@ -1,17 +1,13 @@
-const sql = require('mssql');
+const { Pool } = require('pg');
 require('dotenv').config();
 
-const config = {
-  connectionString: process.env.CONNECTION_STRING,
-};
-
-let pool = null;
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false },
+});
 
 async function getPool() {
-  if (!pool) {
-    pool = await sql.connect(config.connectionString);
-  }
   return pool;
 }
 
-module.exports = { sql, getPool };
+module.exports = { getPool };
