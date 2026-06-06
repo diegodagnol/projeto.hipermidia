@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { api } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import NavInferior from '../components/NavInferior';
-import Contador from '../components/contador';
+import Contador from '../components/Contador';
 import Modal from '../components/Modal';
 import './Passaporte.scss';
 

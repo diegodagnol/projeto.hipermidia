@@ -8,7 +8,7 @@ import { useAuth } from '../context/AuthContext';
 import NavInferior from '../components/NavInferior';
 import bandeiraBloqueadoRaw from '../assets/bandeira-bloqueado.svg?raw';
 import bandeiraDesbloqueadoRaw from '../assets/bandeira-desbloqueado.svg?raw';
-import Contador from '../components/contador';
+import Contador from '../components/Contador';
 import { useProgresso } from '../context/ProgressoContext';
 import Modal from '../components/Modal';
 import { useConfiguracoes } from '../context/ConfiguracoesContext';
