@@ -14,7 +14,14 @@ const errorHandler   = require('./src/middlewares/errorHandler');
 const app = express();
 
 // Headers de segurança HTTP
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+      'img-src': ["'self'", 'data:', 'https://*.basemaps.cartocdn.com', 'https://*.tile.openstreetmap.org'],
+    },
+  },
+}));
 
 app.use(cors({
   origin: process.env.CORS_ORIGINS
