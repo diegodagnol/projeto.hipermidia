@@ -42,13 +42,13 @@ app.use('/api/locais',   locaisRouter);
 
 // Serve admin SPA
 app.use('/admin', express.static(path.join(__dirname, '../hipermidia.admin/dist')));
-app.get('/admin/*', (req, res) => {
+app.get('/admin/*splat', (req, res) => {
   res.sendFile(path.join(__dirname, '../hipermidia.admin/dist/index.html'));
 });
 
 // Serve app SPA (deve ficar por último)
 app.use(express.static(path.join(__dirname, '../hipermidia.app/dist')));
-app.get('*', (req, res) => {
+app.get('/*splat', (req, res) => {
   res.sendFile(path.join(__dirname, '../hipermidia.app/dist/index.html'));
 });
 
