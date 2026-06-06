@@ -36,13 +36,21 @@ const loginLimiter = rateLimit({
 });
 app.use('/auth/admin/login', loginLimiter);
 
-app.get('/', (req, res) => {
-  res.json({ message: 'API Explocus' });
+app.use('/api/auth',     authRouter);
+app.use('/api/usuarios', usuariosRouter);
+app.use('/api/locais',   locaisRouter);
+
+// Serve admin SPA
+app.use('/admin', express.static(path.join(__dirname, '../hipermidia.admin/dist')));
+app.get('/admin/*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../hipermidia.admin/dist/index.html'));
 });
 
-app.use('/auth',     authRouter);
-app.use('/usuarios', usuariosRouter);
-app.use('/locais',   locaisRouter);
+// Serve app SPA (deve ficar por último)
+app.use(express.static(path.join(__dirname, '../hipermidia.app/dist')));
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../hipermidia.app/dist/index.html'));
+});
 
 app.use(errorHandler);
 

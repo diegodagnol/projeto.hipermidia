@@ -2,7 +2,9 @@
   "name": "explocus",
   "private": true,
   "scripts": {
-    "dev": "concurrently --names \"API,ADMIN,APP\" --prefix-colors \"cyan,magenta,green\" \"npm start --prefix hipermidia.api\" \"npm run dev --prefix hipermidia.admin\" \"npm run dev --prefix hipermidia.app\""
+    "dev": "concurrently --names \"API,ADMIN,APP\" --prefix-colors \"cyan,magenta,green\" \"npm start --prefix hipermidia.api\" \"npm run dev --prefix hipermidia.admin\" \"npm run dev --prefix hipermidia.app\"",
+    "build": "npm run build --prefix hipermidia.app && npm run build --prefix hipermidia.admin",
+    "start": "node hipermidia.api/server.js"
   },
   "devDependencies": {
     "concurrently": "^9.2.1"

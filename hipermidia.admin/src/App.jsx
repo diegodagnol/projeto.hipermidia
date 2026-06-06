@@ -9,6 +9,7 @@ const App = () => (
     title="Explocus Admin"
     authProvider={authProvider}
     dataProvider={dataProvider}
+    basename="/admin"
   >
     <Resource
       name="locais"
