@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import './Local.scss';
 import Modal from '../components/Modal';
 
-const VITE_API_URL = import.meta.env.VITE_API_URL || '';
+const VITE_API_URL = '';
 
 export default function Local() {
   const { id } = useParams();
