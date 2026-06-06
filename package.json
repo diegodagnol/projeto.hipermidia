@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "dev": "concurrently --names \"API,ADMIN,APP\" --prefix-colors \"cyan,magenta,green\" \"npm start --prefix hipermidia.api\" \"npm run dev --prefix hipermidia.admin\" \"npm run dev --prefix hipermidia.app\"",
-    "build": "npm install --prefix hipermidia.app && npm install --prefix hipermidia.admin && npm install --prefix hipermidia.api && npm run build --prefix hipermidia.app && npm run build --prefix hipermidia.admin",
+    "build": "(cd hipermidia.app && npm install && npm run build) && (cd hipermidia.admin && npm install && npm run build) && (cd hipermidia.api && npm install)",
     "start": "node hipermidia.api/server.js"
   },
   "devDependencies": {
