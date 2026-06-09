@@ -52,6 +52,7 @@ async function update(id, { nome, descricao, conteudo, latitude, longitude, foto
 
 async function remove(id) {
   const pool = await getPool();
+  await pool.query('DELETE FROM usuariocheckpoint WHERE checkpoint_id = $1', [id]);
   const result = await pool.query(
     'DELETE FROM local WHERE id = $1 RETURNING id',
     [id]
