@@ -93,7 +93,7 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
 });
 
-const RAIO_CHECKIN = 50;
+const RAIO_CHECKIN = 30;
 const CAMPUS_CENTER = [-29.1682, -51.1794];
 
 function criarBandeira(visitado) {
