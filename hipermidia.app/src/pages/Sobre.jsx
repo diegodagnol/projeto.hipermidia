@@ -78,6 +78,7 @@ export default function Sobre() {
           <p className="sobre-rodape">Projeto acadêmico — UCS · 2025</p>
         </section>
 
+
       </div>
     </div>
   );
