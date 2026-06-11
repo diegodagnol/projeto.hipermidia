@@ -1,22 +1,24 @@
 const express = require('express');
 const multer  = require('multer');
-const path    = require('path');
-const fs      = require('fs');
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const cloudinary = require('cloudinary').v2;
 const { body, param, validationResult } = require('express-validator');
 const Local = require('../models/Local');
 const authenticateAdmin = require('../middlewares/authenticateAdmin');
 const sanitizeConteudo  = require('../middlewares/sanitizeHtml');
 
-const uploadsDir = path.join(__dirname, '../../uploads');
-fs.mkdirSync(uploadsDir, { recursive: true });
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key:    process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 const upload = multer({
-  storage: multer.diskStorage({
-    destination: uploadsDir,
-    filename: (_req, file, cb) => {
-      const ext  = path.extname(file.originalname).toLowerCase();
-      const name = `${Date.now()}-${Math.random().toString(36).slice(2)}${ext}`;
-      cb(null, name);
+  storage: new CloudinaryStorage({
+    cloudinary,
+    params: {
+      folder: 'explocus',
+      allowed_formats: ['jpg', 'jpeg', 'png', 'webp'],
     },
   }),
   limits: { fileSize: 5 * 1024 * 1024 },
@@ -26,10 +28,14 @@ const upload = multer({
   },
 });
 
-function deletarFotoLocal(foto_url) {
-  if (!foto_url || !foto_url.startsWith('/uploads/')) return;
-  const filepath = path.join(uploadsDir, path.basename(foto_url));
-  fs.unlink(filepath, () => {});
+async function deletarFotoCloudinary(foto_url) {
+  if (!foto_url || !foto_url.includes('cloudinary.com')) return;
+  try {
+    const partes = foto_url.split('/');
+    const arquivo = partes[partes.length - 1].replace(/\.[^.]+$/, '');
+    const publicId = `explocus/${arquivo}`;
+    await cloudinary.uploader.destroy(publicId);
+  } catch (_) {}
 }
 
 const router = express.Router();
@@ -108,7 +114,7 @@ router.put('/:id', authenticateAdmin, sanitizeConteudo, [...validarId, ...valida
     const existe = await Local.findById(id);
     if (!existe) return res.status(404).json({ erro: 'Local não encontrado' });
 
-    if (existe.foto_url !== foto_url) deletarFotoLocal(existe.foto_url);
+    if (existe.foto_url !== foto_url) await deletarFotoCloudinary(existe.foto_url);
 
     const atualizado = await Local.update(id, { nome, descricao, conteudo, latitude, longitude, foto_url });
     res.json(atualizado);
@@ -131,9 +137,9 @@ router.post('/:id/upload', authenticateAdmin, validarId, validar, (req, res, nex
     const existe = await Local.findById(id);
     if (!existe) return res.status(404).json({ erro: 'Local não encontrado' });
 
-    deletarFotoLocal(existe.foto_url);
+    await deletarFotoCloudinary(existe.foto_url);
 
-    const foto_url = `/uploads/${req.file.filename}`;
+    const foto_url = req.file.path;
     await Local.updateFoto(id, foto_url);
     res.json({ foto_url });
   } catch (err) {
@@ -149,7 +155,7 @@ router.delete('/:id', authenticateAdmin, validarId, validar, async (req, res, ne
     if (!existe) return res.status(404).json({ erro: 'Local não encontrado' });
 
     await Local.remove(id);
-    deletarFotoLocal(existe.foto_url);
+    await deletarFotoCloudinary(existe.foto_url);
     res.status(204).send();
   } catch (err) {
     next(err);
