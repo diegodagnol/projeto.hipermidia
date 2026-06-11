@@ -22,7 +22,7 @@ const ITENS_MENU = [
     { label: "Meus dados", rota: "/perfil/meus-dados" },
     { label: "Configurações", rota: "/perfil/configuracoes" },
     { label: "Sobre o projeto", rota: "/sobre" },
-    { label: "Ajuda", rota: null },
+    { label: "Ajuda", rota: "/ajuda" },
 ];
 
 export default function Perfil() {

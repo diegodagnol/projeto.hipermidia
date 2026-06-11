@@ -1,0 +1,182 @@
+@use '../styles/variables' as *;
+
+.ajuda-pagina {
+  min-height: 100dvh;
+  background: $cinza-bg;
+  display: flex;
+  flex-direction: column;
+}
+
+.ajuda-header {
+  height: $header-h;
+  background: $branco;
+  border-bottom: 1px solid $cinza-borda;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 12px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.ajuda-voltar {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ajuda-titulo {
+  font-size: 17px;
+  font-weight: 600;
+  color: $texto;
+}
+
+.ajuda-corpo {
+  flex: 1;
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+// ─── Seção ────────────────────────────────────────────────────────────────────
+.ajuda-secao {
+  background: $branco;
+  border-radius: $raio;
+  padding: 20px 16px;
+  box-shadow: $sombra;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  &__titulo {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: $texto-suave;
+  }
+
+  &__desc {
+    font-size: 14px;
+    color: $texto-suave;
+    margin: -4px 0 4px;
+  }
+}
+
+// ─── FAQ ──────────────────────────────────────────────────────────────────────
+.faq-lista {
+  display: flex;
+  flex-direction: column;
+}
+
+.faq-item {
+  border-top: 1px solid $cinza-borda;
+
+  &:first-child { border-top: none; }
+
+  &__pergunta {
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 14px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    cursor: pointer;
+    text-align: left;
+    font-size: 15px;
+    font-weight: 500;
+    color: $texto;
+  }
+
+  &__seta {
+    flex-shrink: 0;
+    color: $texto-suave;
+    transition: transform .2s;
+  }
+
+  &--aberto &__seta {
+    transform: rotate(180deg);
+  }
+
+  &__resposta {
+    font-size: 14px;
+    color: $texto-suave;
+    line-height: 1.6;
+    padding-bottom: 14px;
+    margin: 0;
+  }
+}
+
+// ─── Formulário ───────────────────────────────────────────────────────────────
+.ajuda-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+
+  &__campo {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    label {
+      font-size: 13px;
+      font-weight: 500;
+      color: $texto-suave;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid $cinza-borda;
+      border-radius: $raio-input;
+      font-size: 15px;
+      color: $texto;
+      background: $cinza-bg;
+      font-family: inherit;
+      resize: none;
+      box-sizing: border-box;
+      transition: border-color .15s;
+
+      &:focus {
+        outline: none;
+        border-color: $azul;
+      }
+    }
+  }
+
+  &__erro {
+    font-size: 13px;
+    color: $vermelho;
+    margin: 0;
+  }
+
+  &__enviar {
+    width: 100%;
+    margin-top: 4px;
+  }
+}
+
+// ─── Sucesso ──────────────────────────────────────────────────────────────────
+.ajuda-sucesso {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 0;
+  text-align: center;
+  color: $verde;
+
+  p {
+    font-size: 15px;
+    color: $texto;
+    margin: 0;
+  }
+}

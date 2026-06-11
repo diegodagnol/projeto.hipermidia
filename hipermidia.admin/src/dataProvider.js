@@ -120,6 +120,11 @@ const dataProvider = {
       delete payload.foto;
     }
 
+    if (resource === 'mensagens') {
+      const result = await fetchJson(`${API_URL}/mensagens/${id}/lido`, { method: 'PATCH' });
+      return { data: result.data };
+    }
+
     const result = await fetchJson(`${API_URL}/${resource}/${id}`, {
       method: 'PUT',
       body: JSON.stringify(payload),

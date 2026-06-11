@@ -6,10 +6,11 @@ const helmet     = require('helmet');
 const rateLimit  = require('express-rate-limit');
 const path       = require('path');
 
-const authRouter     = require('./src/routes/auth');
-const usuariosRouter = require('./src/routes/usuarios');
-const locaisRouter   = require('./src/routes/locais');
-const errorHandler   = require('./src/middlewares/errorHandler');
+const authRouter      = require('./src/routes/auth');
+const usuariosRouter  = require('./src/routes/usuarios');
+const locaisRouter    = require('./src/routes/locais');
+const mensagensRouter = require('./src/routes/mensagens');
+const errorHandler    = require('./src/middlewares/errorHandler');
 
 const app = express();
 
@@ -42,9 +43,10 @@ const loginLimiter = rateLimit({
 });
 app.use('/auth/admin/login', loginLimiter);
 
-app.use('/api/auth',     authRouter);
-app.use('/api/usuarios', usuariosRouter);
-app.use('/api/locais',   locaisRouter);
+app.use('/api/auth',      authRouter);
+app.use('/api/usuarios',  usuariosRouter);
+app.use('/api/locais',    locaisRouter);
+app.use('/api/mensagens', mensagensRouter);
 
 // Serve admin SPA
 app.use('/admin', express.static(path.join(__dirname, '../hipermidia.admin/dist')));

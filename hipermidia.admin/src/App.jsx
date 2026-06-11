@@ -8,6 +8,7 @@ import dataProvider from './dataProvider';
 const i18nProvider = polyglotI18nProvider(() => englishMessages, 'en');
 import { LocalList, LocalCreate, LocalEdit } from './resources/locais';
 import { UsuarioList, UsuarioShow, UsuarioEdit } from './resources/usuarios';
+import { MensagemList, MensagemShow } from './resources/mensagens';
 
 const App = () => (
   <HashRouter>
@@ -31,6 +32,12 @@ const App = () => (
           show={UsuarioShow}
           edit={UsuarioEdit}
           options={{ label: 'Usuários' }}
+        />
+        <Resource
+          name="mensagens"
+          list={MensagemList}
+          show={MensagemShow}
+          options={{ label: 'Mensagens' }}
         />
       </AdminUI>
     </AdminContext>
