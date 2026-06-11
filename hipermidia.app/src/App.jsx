@@ -13,6 +13,7 @@ import Perfil from './pages/Perfil';
 import MeusDados from './pages/MeusDados';
 import Configuracoes from './pages/Configuracoes';
 import Ranking from './pages/Ranking';
+import Sobre from './pages/Sobre';
 
 // Layout único para rotas protegidas — ProgressoProvider persiste entre navegações
 function LayoutProtegido() {
@@ -43,6 +44,7 @@ export default function App() {
             <Route path="/perfil/meus-dados" element={<MeusDados />} />
             <Route path="/perfil/configuracoes" element={<Configuracoes />} />
             <Route path="/ranking" element={<Ranking />} />
+            <Route path="/sobre" element={<Sobre />} />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

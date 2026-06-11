@@ -1,0 +1,176 @@
+@use '../styles/variables' as *;
+
+.sobre-pagina {
+  min-height: 100dvh;
+  background: $cinza-bg;
+  display: flex;
+  flex-direction: column;
+}
+
+.sobre-header {
+  height: $header-h;
+  background: $branco;
+  border-bottom: 1px solid $cinza-borda;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 12px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.sobre-voltar {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.sobre-titulo {
+  font-size: 17px;
+  font-weight: 600;
+  color: $texto;
+}
+
+.sobre-corpo {
+  flex: 1;
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+// ─── Hero ─────────────────────────────────────────────────────────────────────
+.sobre-hero {
+  background: $azul;
+  border-radius: $raio;
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+
+  &__icone {
+    width: 72px;
+    height: 72px;
+    background: rgba(255, 255, 255, .15);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__nome {
+    font-size: 26px;
+    font-weight: 700;
+    color: $branco;
+    letter-spacing: -.02em;
+  }
+
+  &__tagline {
+    font-size: 14px;
+    color: rgba(255, 255, 255, .8);
+    line-height: 1.4;
+  }
+}
+
+// ─── Seções ───────────────────────────────────────────────────────────────────
+.sobre-secao {
+  background: $branco;
+  border-radius: $raio;
+  padding: 20px 16px;
+  box-shadow: $sombra;
+
+  &__titulo {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: $texto-suave;
+    margin-bottom: 12px;
+  }
+
+  &__texto {
+    font-size: 15px;
+    color: $texto;
+    line-height: 1.6;
+  }
+
+  &--rodape {
+    background: transparent;
+    box-shadow: none;
+    padding: 8px 16px 24px;
+  }
+}
+
+// ─── Passos ───────────────────────────────────────────────────────────────────
+.sobre-passos {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sobre-passo {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+
+  &__num {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: $azul;
+    color: $branco;
+    font-size: 13px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  strong {
+    font-size: 15px;
+    font-weight: 600;
+    color: $texto;
+    display: block;
+    margin-bottom: 3px;
+  }
+
+  p {
+    font-size: 13px;
+    color: $texto-suave;
+    line-height: 1.5;
+    margin: 0;
+  }
+}
+
+// ─── Tags de tecnologia ───────────────────────────────────────────────────────
+.sobre-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.sobre-tag {
+  background: $cinza-light;
+  color: $texto;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 12px;
+  border-radius: 100px;
+  border: 1px solid $cinza-borda;
+}
+
+// ─── Rodapé ───────────────────────────────────────────────────────────────────
+.sobre-rodape {
+  font-size: 13px;
+  color: $texto-suave;
+  text-align: center;
+}
