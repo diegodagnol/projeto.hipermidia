@@ -96,10 +96,6 @@ const dataProvider = {
       }
     }
 
-    if (created.foto_url) {
-      created.foto = { src: created.foto_url, title: created.nome };
-    }
-
     return { data: created };
   },
 
@@ -128,11 +124,6 @@ const dataProvider = {
       method: 'PUT',
       body: JSON.stringify(payload),
     });
-
-    if (resource === 'locais' && result.data.foto_url) {
-      result.data.foto = { src: result.data.foto_url, title: result.data.nome };
-    }
-
     return { data: result.data };
   },
 
