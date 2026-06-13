@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { api } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import SenhaRequisitos, { senhaValida } from '../components/SenhaRequisitos';
+import CampoSenha from '../components/CampoSenha';
 
 export default function Cadastro() {
   const { login } = useAuth();
@@ -78,7 +79,7 @@ export default function Cadastro() {
             {erros.email && <span className="erro-campo">{erros.email}</span>}
           </div>
           <div className="campo">
-            <input name="senha" type="password" autoComplete="new-password" required value={form.senha} onChange={handleChange} placeholder="Senha" />
+            <CampoSenha name="senha" autoComplete="new-password" required value={form.senha} onChange={handleChange} placeholder="Senha" />
             {erros.senha && <span className="erro-campo">{erros.senha}</span>}
           </div>
           <SenhaRequisitos valor={form.senha} />

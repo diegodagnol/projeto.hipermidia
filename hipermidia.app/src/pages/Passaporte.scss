@@ -55,6 +55,7 @@
     cursor: pointer;
     box-shadow: var(--sombra);
     position: relative;
+    transition: all 200ms ease;
 
     &-imagem {
       width: 100px;

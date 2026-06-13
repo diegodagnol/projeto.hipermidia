@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { api } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import SenhaRequisitos, { senhaValida } from '../components/SenhaRequisitos';
+import CampoSenha from '../components/CampoSenha';
 import './MeusDados.scss';
 
 export default function MeusDados() {
@@ -148,18 +149,18 @@ export default function MeusDados() {
           <form onSubmit={handleSalvarSenha}>
             <div className="campo">
               <label className="campo-label">Senha atual</label>
-              <input name="senha_atual" type="password" autoComplete="current-password" value={senha.senha_atual} onChange={handleChangeSenha} placeholder="Senha atual" />
+              <CampoSenha name="senha_atual" autoComplete="current-password" value={senha.senha_atual} onChange={handleChangeSenha} placeholder="Senha atual" />
               {errosSenha.senha_atual && <span className="erro-campo">{errosSenha.senha_atual}</span>}
             </div>
             <div className="campo">
               <label className="campo-label">Nova senha</label>
-              <input name="nova_senha" type="password" autoComplete="new-password" value={senha.nova_senha} onChange={handleChangeSenha} placeholder="Mínimo 8 caracteres" />
+              <CampoSenha name="nova_senha" autoComplete="new-password" value={senha.nova_senha} onChange={handleChangeSenha} placeholder="Mínimo 8 caracteres" />
               {errosSenha.nova_senha && <span className="erro-campo">{errosSenha.nova_senha}</span>}
             </div>
             <SenhaRequisitos valor={senha.nova_senha} />
             <div className="campo">
               <label className="campo-label">Confirmar nova senha</label>
-              <input name="confirmar" type="password" autoComplete="new-password" value={senha.confirmar} onChange={handleChangeSenha} placeholder="Repita a nova senha" />
+              <CampoSenha name="confirmar" autoComplete="new-password" value={senha.confirmar} onChange={handleChangeSenha} placeholder="Repita a nova senha" />
               {errosSenha.confirmar && <span className="erro-campo">{errosSenha.confirmar}</span>}
             </div>
             {errosSenha.geral && <p className="erro-campo">{errosSenha.geral}</p>}

@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../context/AuthContext";
 import { api } from "../services/api";
 import SenhaRequisitos, { senhaValida } from "../components/SenhaRequisitos";
+import CampoSenha from "../components/CampoSenha";
 import './Abertura.scss';
 
 // ─── SVG do logo (reutilizado nos dois estados) ───────────────────────────────
@@ -71,7 +72,7 @@ function FormLogin({ onCadastro }) {
         />
       </div>
       <div className="campo">
-        <input name="senha" type="password" required value={form.senha} onChange={set('senha')} placeholder="Senha" autoComplete="current-password" />
+        <CampoSenha name="senha" required value={form.senha} onChange={set('senha')} placeholder="Senha" autoComplete="current-password" />
       </div>
       {erro && <p className="erro-campo">{erro}</p>}
       <button type="submit" className="btn btn-primario" disabled={carregando}>
@@ -145,7 +146,7 @@ function FormCadastro({ onLogin }) {
         {erros.email && <span className="erro-campo">{erros.email}</span>}
       </div>
       <div className="campo">
-        <input name="senha" type="password" required value={form.senha} onChange={set('senha')} placeholder="Senha" autoComplete="new-password" />
+        <CampoSenha name="senha" required value={form.senha} onChange={set('senha')} placeholder="Senha" autoComplete="new-password" />
         {erros.senha && <span className="erro-campo">{erros.senha}</span>}
       </div>
       <SenhaRequisitos valor={form.senha} />

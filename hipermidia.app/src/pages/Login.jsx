@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import CampoSenha from '../components/CampoSenha';
 
 export default function Login() {
   const { login } = useAuth();
@@ -54,9 +55,8 @@ export default function Login() {
             />
           </div>
           <div className="campo">
-            <input
+            <CampoSenha
               name="senha"
-              type="password"
               autoComplete="current-password"
               required
               value={form.senha}
