@@ -37,6 +37,19 @@ router.get('/', authenticateAdmin, async (req, res, next) => {
   }
 });
 
+// GET /mensagens/:id — admin
+router.get('/:id', authenticateAdmin, [
+  param('id').isInt({ min: 1 }),
+], validar, async (req, res, next) => {
+  try {
+    const mensagem = await Mensagem.findById(Number(req.params.id));
+    if (!mensagem) return res.status(404).json({ erro: 'Mensagem não encontrada' });
+    res.json(mensagem);
+  } catch (err) {
+    next(err);
+  }
+});
+
 // PATCH /mensagens/:id/lido — admin
 router.patch('/:id/lido', authenticateAdmin, [
   param('id').isInt({ min: 1 }),

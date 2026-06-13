@@ -21,6 +21,17 @@ async function findAll() {
   return result.rows;
 }
 
+async function findById(id) {
+  const pool = await getPool();
+  const result = await pool.query(
+    `SELECT id, nome, email, assunto, mensagem, lido, criado_em
+     FROM mensagens
+     WHERE id = $1`,
+    [id]
+  );
+  return result.rows[0] || null;
+}
+
 async function marcarLido(id) {
   const pool = await getPool();
   const result = await pool.query(
@@ -31,4 +42,4 @@ async function marcarLido(id) {
   return result.rows[0] || null;
 }
 
-module.exports = { create, findAll, marcarLido };
+module.exports = { create, findAll, findById, marcarLido };
