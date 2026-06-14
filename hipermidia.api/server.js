@@ -20,6 +20,7 @@ app.use(helmet({
     directives: {
       ...helmet.contentSecurityPolicy.getDefaultDirectives(),
       'img-src': ["'self'", 'data:', 'https://*.basemaps.cartocdn.com', 'https://*.tile.openstreetmap.org', 'https://res.cloudinary.com'],
+      'frame-src': ["'self'", 'https://www.youtube.com', 'https://www.youtube-nocookie.com'],
     },
   },
 }));
