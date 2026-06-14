@@ -19,7 +19,7 @@ app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       ...helmet.contentSecurityPolicy.getDefaultDirectives(),
-      //'img-src': ["'self'", 'data:', 'https://*.basemaps.cartocdn.com', 'https://*.tile.openstreetmap.org', 'https://res.cloudinary.com'],
+      'img-src': ["'self'", 'data:', 'https://*.basemaps.cartocdn.com', 'https://*.tile.openstreetmap.org', 'https://res.cloudinary.com', 'https://*.ucs.br', 'https://comung.org.br'],
       'frame-src': ["'self'", 'https://www.youtube.com', 'https://www.youtube-nocookie.com'],
     },
   },
