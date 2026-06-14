@@ -77,8 +77,13 @@ function Toolbar({ editor }) {
             if (url) editor.chain().focus().setImage({ src: url }).run();
           }, 'Inserir imagem', '🖼')}
           {btn(false, () => {
-            const url = window.prompt('URL do YouTube:');
-            if (url) editor.chain().focus().setYoutubeVideo({ src: url }).run();
+            const entrada = window.prompt('Cole a URL do YouTube ou o código <iframe> de incorporação:');
+            if (!entrada) return;
+            // Aceita tanto a URL pura quanto o código <iframe ... src="..."> colado inteiro
+            const matchIframe = entrada.match(/<iframe[^>]*\bsrc=["']([^"']+)["']/i);
+            const url = (matchIframe ? matchIframe[1] : entrada).trim();
+            const ok = editor.chain().focus().setYoutubeVideo({ src: url }).run();
+            if (!ok) window.alert('URL do YouTube inválida. Use um link como https://www.youtube.com/watch?v=ID');
           }, 'Inserir vídeo do YouTube', '▶')}
           {btn(false, () => editor.chain().focus().setHorizontalRule().run(), 'Linha divisória', '—')}
         </div>

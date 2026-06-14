@@ -19,10 +19,13 @@ app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       ...helmet.contentSecurityPolicy.getDefaultDirectives(),
-      'img-src': ["'self'", 'data:', 'https://*.basemaps.cartocdn.com', 'https://*.tile.openstreetmap.org', 'https://res.cloudinary.com'],
+      //'img-src': ["'self'", 'data:', 'https://*.basemaps.cartocdn.com', 'https://*.tile.openstreetmap.org', 'https://res.cloudinary.com'],
       'frame-src': ["'self'", 'https://www.youtube.com', 'https://www.youtube-nocookie.com'],
     },
   },
+  // YouTube usa o header Referer para validar o domínio que incorpora o vídeo.
+  // O padrão do helmet (no-referrer) faz o embed falhar; enviamos a origem.
+  referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
 }));
 
 app.use(cors({
