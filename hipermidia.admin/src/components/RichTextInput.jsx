@@ -10,6 +10,23 @@ import Image from '@tiptap/extension-image';
 import Youtube from '@tiptap/extension-youtube';
 import './RichTextInput.css';
 
+// Estende o Link para preservar a classe (usada no link com estilo de botão)
+const LinkComClasse = Link.extend({
+  addAttributes() {
+    return {
+      ...this.parent?.(),
+      class: {
+        default: null,
+        parseHTML: (element) => element.getAttribute('class'),
+        renderHTML: (attributes) =>
+          attributes.class ? { class: attributes.class } : {},
+      },
+    };
+  },
+});
+
+const CLASSE_BOTAO = 'link-botao';
+
 function btn(active, onClick, title, children, extra = '', disabled = false) {
   return (
     <button
@@ -67,6 +84,24 @@ function Toolbar({ editor }) {
             const url = window.prompt('URL do link:');
             if (url) editor.chain().focus().setLink({ href: url, target: '_blank' }).run();
           }, 'Inserir link', '🔗')}
+          {btn(false, () => {
+            const url = window.prompt('URL do botão:');
+            if (!url) return;
+            const { from, to } = editor.state.selection;
+            if (from === to) {
+              // Sem texto selecionado: pede o rótulo e insere o botão
+              const texto = window.prompt('Texto do botão:', 'Saiba mais');
+              if (!texto) return;
+              editor.chain().focus()
+                .insertContent(`<a class="${CLASSE_BOTAO}" href="${url}" target="_blank">${texto}</a>`)
+                .run();
+            } else {
+              // Aplica o estilo de botão ao texto selecionado
+              editor.chain().focus()
+                .setLink({ href: url, target: '_blank', class: CLASSE_BOTAO })
+                .run();
+            }
+          }, 'Inserir link com estilo de botão', '🔘')}
           {btn(editor.isActive('link'), () => editor.chain().focus().unsetLink().run(), 'Remover link', '🔗✕')}
         </div>
 
@@ -121,7 +156,7 @@ export default function RichTextInput({ source, label, placeholder = 'Digite o c
   const editor = useEditor({
     extensions: [
       StarterKit,
-      Link.configure({ openOnClick: false }),
+      LinkComClasse.configure({ openOnClick: false }),
       Placeholder.configure({ placeholder }),
       TextAlign.configure({ types: ['heading', 'paragraph'] }),
       TableKit.configure({ table: { resizable: false } }),

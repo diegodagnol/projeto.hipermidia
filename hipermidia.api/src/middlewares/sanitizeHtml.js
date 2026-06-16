@@ -14,7 +14,7 @@ const opcoes = {
     'iframe',
   ],
   allowedAttributes: {
-    'a':      ['href', 'target', 'rel'],
+    'a':      ['href', 'target', 'rel', 'class'],
     'img':    ['src', 'alt', 'width', 'height'],
     'th':     ['colspan', 'rowspan', 'style'],
     'td':     ['colspan', 'rowspan', 'style', 'data-background-color'],
@@ -22,6 +22,10 @@ const opcoes = {
     'h2':     ['style'],
     'h3':     ['style'],
     'iframe': ['src', 'width', 'height', 'frameborder', 'allowfullscreen'],
+  },
+  allowedClasses: {
+    // Apenas a classe do link com estilo de botão é permitida em <a>
+    'a': ['link-botao'],
   },
   allowedStyles: {
     // Permite apenas alinhamento (gerado pelo TipTap TextAlign)
