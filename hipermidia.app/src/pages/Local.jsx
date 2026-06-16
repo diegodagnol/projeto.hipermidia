@@ -18,13 +18,33 @@ export default function Local() {
   const capaRef = useRef(null);
 
   useEffect(() => {
-    const handleScroll = () => {
+    let frame = null;
+    let atual = 0;
+    let alvo = 0;
+
+    const animar = () => {
+      // Interpolação: aproxima suavemente o valor atual do alvo
+      atual += (alvo - atual) * 0.12;
       if (capaRef.current) {
-        capaRef.current.style.transform = `translateY(${window.scrollY * 0.4}px)`;
+        capaRef.current.style.transform = `translate3d(0, ${atual.toFixed(2)}px, 0)`;
+      }
+      if (Math.abs(alvo - atual) > 0.1) {
+        frame = requestAnimationFrame(animar);
+      } else {
+        frame = null;
       }
     };
+
+    const handleScroll = () => {
+      alvo = window.scrollY * 0.4;
+      if (frame === null) frame = requestAnimationFrame(animar);
+    };
+
     window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (frame !== null) cancelAnimationFrame(frame);
+    };
   }, []);
 
   useEffect(() => {
