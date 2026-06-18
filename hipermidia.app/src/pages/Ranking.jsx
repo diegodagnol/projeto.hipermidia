@@ -7,7 +7,7 @@ import Modal from '../components/Modal';
 import './Ranking.scss';
 
 // 'combinado' = taxa checkpoints/tempo | 'checkpoints' = só contagem
-const MODO_RANKING = 'combinado';
+const MODO_RANKING = 'checkpoints';
 // true = exibe tempo decorrido no card
 const MOSTRAR_TEMPO = true;
 

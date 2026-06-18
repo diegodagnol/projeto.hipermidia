@@ -66,7 +66,7 @@ const validacoesAtualizar = [
 
 // 'combinado' = score por taxa (checkpoints / segundos desde cadastro)
 // 'checkpoints' = apenas contagem, desempate por tempo até último check-in
-const MODO_RANKING = 'combinado';
+const MODO_RANKING = 'checkpoints';
 
 const QUERY_RANKING = {
   combinado: `
