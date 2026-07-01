@@ -1,4 +1,4 @@
-# Exploócus
+# Explócus
 
 Aplicação hipermídia gamificada para exploração do campus da **Universidade de Caxias do Sul (UCS)**. O usuário percorre pontos de interesse do campus, faz *check-in* em cada local, coleciona carimbos em um "passaporte" digital e disputa um ranking.
 
